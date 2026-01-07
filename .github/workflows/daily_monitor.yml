@@ -1,0 +1,44 @@
+name: Daily Insider Trading Monitor
+
+on:
+  schedule:
+    - cron: '0 18 * * *'  # 6 PM UTC (1 PM Mexico)
+  workflow_dispatch:  # Permite ejecutar manualmente
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install beautifulsoup4 requests
+
+    - name: Run monitor
+      env:
+        MASSIVE_API_KEY: ${{ secrets.MASSIVE_API_KEY }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      run: |
+        python daily_monitor.py
+
+    - name: Commit database changes
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add data/*.db || true
+        git diff --quiet && git diff --staged --quiet || git commit -m "Update database - $(date +'%Y-%m-%d')"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: main

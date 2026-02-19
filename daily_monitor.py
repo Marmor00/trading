@@ -674,6 +674,81 @@ def generate_daily_summary():
     send_telegram(msg)
 
 
+def generate_positions_detail():
+    """Envia segundo mensaje con detalle de posiciones activas por estrategia."""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Obtener estrategias ordenadas por return%
+    c.execute("SELECT strategy, return_pct FROM portfolios ORDER BY return_pct DESC")
+    strats = c.fetchall()
+
+    messages = []
+    current_msg = "<b>POSITIONS DETAIL</b>\n"
+
+    for strategy, port_ret in strats:
+        name = STRATEGIES.get(strategy, {}).get('name', strategy)
+
+        c.execute("""
+            SELECT t.ticker, t.entry_price, t.current_price, t.return_pct,
+                   t.days_holding, t.owner_name, t.title, e.shares
+            FROM trades t
+            JOIN executions e ON e.trade_id = t.id AND e.action = 'BUY'
+            WHERE t.strategy = ? AND t.status = 'ACTIVE'
+            ORDER BY t.return_pct DESC
+        """, (strategy,))
+        positions = c.fetchall()
+
+        if not positions:
+            continue
+
+        block = f"\n<b>{name}</b> ({port_ret:+.1f}%)\n"
+        for pos in positions:
+            ticker, entry, current, ret, days, owner, title, shares = pos
+            ret = ret or 0
+            days = days or 0
+            arrow = "+" if ret > 0 else ""
+            block += f"  {ticker} {arrow}{ret:.1f}% | ${entry:.0f}→${current:.0f} | {days}d | {shares}sh\n"
+
+        # Telegram limit: 4096 chars. Si se pasa, enviar lo acumulado y empezar nuevo
+        if len(current_msg) + len(block) > 3900:
+            messages.append(current_msg)
+            current_msg = "<b>POSITIONS (cont.)</b>\n"
+
+        current_msg += block
+
+    # Trades cerrados hoy
+    c.execute("""
+        SELECT t.strategy, t.ticker, t.return_pct, t.exit_reason
+        FROM trades t
+        WHERE t.status = 'CLOSED' AND t.exit_date = ?
+        ORDER BY t.return_pct DESC
+    """, (datetime.now().strftime('%Y-%m-%d'),))
+    closed_today = c.fetchall()
+
+    if closed_today:
+        block = "\n<b>CLOSED TODAY</b>\n"
+        for row in closed_today:
+            strat, ticker, ret, reason = row
+            ret = ret or 0
+            name = STRATEGIES.get(strat, {}).get('name', strat)
+            tag = "WIN" if ret > 0 else "LOSS"
+            block += f"  {ticker} ({name}) {ret:+.1f}% [{tag}] {reason}\n"
+
+        if len(current_msg) + len(block) > 3900:
+            messages.append(current_msg)
+            current_msg = ""
+        current_msg += block
+
+    conn.close()
+
+    if current_msg.strip():
+        messages.append(current_msg)
+
+    for msg in messages:
+        send_telegram(msg)
+
+
 def main():
     print("=" * 60)
     print("FORWARD TESTING MONITOR v2.1")
@@ -688,6 +763,7 @@ def main():
         print("\nNo trades found")
         recalculate_portfolios()
         generate_daily_summary()
+        generate_positions_detail()
         return
 
     print(f"\n{len(trades)} purchases from OpenInsider")
@@ -717,6 +793,9 @@ def main():
 
     # 6. Send summary
     generate_daily_summary()
+
+    # 7. Send positions detail
+    generate_positions_detail()
 
     print("\n" + "=" * 60)
     print("DONE")

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Score >=60 | Trading Simulation Lab</title>
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="back-link">Back to Lab</a>
+        <h1>Score >=60</h1>
+        <p class="subtitle">Buy when insider score >= 60</p>
+    </header>
+
+    <main>
+        <!-- Key Metrics -->
+        <section class="metrics-grid">
+            <div class="metric">
+                <div class="metric-label">Total Value</div>
+                <div class="metric-value">$9,969</div>
+            </div>
+            <div class="metric negative">
+                <div class="metric-label">Return</div>
+                <div class="metric-value">-0.3%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Win Rate</div>
+                <div class="metric-value">0%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Trades</div>
+                <div class="metric-value">3 closed</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Avg Win</div>
+                <div class="metric-value positive">0.0%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Avg Loss</div>
+                <div class="metric-value negative">-10.8%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Best Trade</div>
+                <div class="metric-value positive">-10.8%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Max Drawdown</div>
+                <div class="metric-value negative">0.0%</div>
+            </div>
+        </section>
+
+        <!-- Profile Config -->
+        <section class="config-section">
+            <h2>Configuration</h2>
+            <div class="config-grid">
+                <span>Asset Type: <strong>stock</strong></span>
+                <span>Data Source: <strong>openinsider</strong></span>
+                <span>Initial Capital: <strong>$10000</strong></span>
+                <span>Position Size: <strong>8.0%</strong></span>
+                <span>Max Positions: <strong>12</strong></span>
+                <span>Stop Loss: <strong>-10.0%</strong></span>
+                <span>Take Profit: <strong>+20.0%</strong></span>
+                <span>Max Hold: <strong>60 days</strong></span>
+            </div>
+        </section>
+
+        <!-- Portfolio Value Chart -->
+        <section class="chart-section">
+            <h2>Portfolio Value Over Time</h2>
+            
+            <div class="chart-container">
+                <canvas id="valueChart"></canvas>
+            </div>
+            
+        </section>
+
+        <!-- Active Positions -->
+        
+        <section class="table-section">
+            <h2>Active Positions (12)</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Company</th>
+                            <th>Entry</th>
+                            <th>Current</th>
+                            <th>Return</th>
+                            <th>Days</th>
+                            <th>Shares</th>
+                            <th>Insider</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td><strong>FLYW</strong></td>
+                            <td>Flywire Corp</td>
+                            <td>$11.11</td>
+                            <td>$12.56</td>
+                            <td class="positive">13.1%</td>
+                            <td>11</td>
+                            <td>47</td>
+                            <td>Voss Capital, LP</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>ABX</strong></td>
+                            <td>Abacus Global Management,</td>
+                            <td>$8.88</td>
+                            <td>$9.64</td>
+                            <td class="positive">8.6%</td>
+                            <td>11</td>
+                            <td>82</td>
+                            <td>McNealy Sean</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>ABX</strong></td>
+                            <td>Abacus Global Management,</td>
+                            <td>$8.88</td>
+                            <td>$9.64</td>
+                            <td class="positive">8.6%</td>
+                            <td>11</td>
+                            <td>75</td>
+                            <td>Kirby Kevin Scott</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>DLHC</strong></td>
+                            <td>Dlh Holdings Corp.</td>
+                            <td>$5.49</td>
+                            <td>$5.91</td>
+                            <td class="positive">7.7%</td>
+                            <td>11</td>
+                            <td>60</td>
+                            <td>Mink Brook Asset Man</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>LNZA</strong></td>
+                            <td>Lanzatech Global, Inc.</td>
+                            <td>$8.92</td>
+                            <td>$9.32</td>
+                            <td class="positive">4.5%</td>
+                            <td>11</td>
+                            <td>88</td>
+                            <td>Guardians of New Zea</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>WRB</strong></td>
+                            <td>Berkley W R Corp</td>
+                            <td>$70.80</td>
+                            <td>$72.64</td>
+                            <td class="positive">2.6%</td>
+                            <td>11</td>
+                            <td>5</td>
+                            <td>Mitsui Sumitomo Insu</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>AVBC</strong></td>
+                            <td>Avidia Bancorp, Inc.</td>
+                            <td>$18.38</td>
+                            <td>$18.69</td>
+                            <td class="positive">1.7%</td>
+                            <td>6</td>
+                            <td>19</td>
+                            <td>Jensen Barry H</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>PCB</strong></td>
+                            <td>Pcb Bancorp</td>
+                            <td>$22.25</td>
+                            <td>$22.41</td>
+                            <td class="positive">0.7%</td>
+                            <td>6</td>
+                            <td>17</td>
+                            <td>Lee Sang Young</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>SAH</strong></td>
+                            <td>Sonic Automotive Inc</td>
+                            <td>$62.89</td>
+                            <td>$62.62</td>
+                            <td class="negative">-0.4%</td>
+                            <td>11</td>
+                            <td>9</td>
+                            <td>Rusnak Paul P.</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>HIPO</strong></td>
+                            <td>Hippo Holdings Inc.</td>
+                            <td>$28.32</td>
+                            <td>$27.70</td>
+                            <td class="negative">-2.2%</td>
+                            <td>11</td>
+                            <td>21</td>
+                            <td>Zeltser Guy</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>NRGV</strong></td>
+                            <td>Energy Vault Holdings, In</td>
+                            <td>$3.31</td>
+                            <td>$3.19</td>
+                            <td class="negative">-3.6%</td>
+                            <td>4</td>
+                            <td>97</td>
+                            <td>Piconi Robert</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>COTY</strong></td>
+                            <td>Coty Inc.</td>
+                            <td>$2.61</td>
+                            <td>$2.45</td>
+                            <td class="negative">-6.1%</td>
+                            <td>11</td>
+                            <td>137</td>
+                            <td>Mercier Laurent</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+
+        <!-- Closed Trades -->
+        
+        <section class="table-section">
+            <h2>Closed Trades (3)</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Entry</th>
+                            <th>Exit</th>
+                            <th>Return</th>
+                            <th>Days</th>
+                            <th>Reason</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td><strong>KKR</strong></td>
+                            <td>$103.60</td>
+                            <td>$92.42</td>
+                            <td class="negative">-10.8%</td>
+                            <td>4</td>
+                            <td><span class="badge badge-stop_loss">STOP_LOSS</span></td>
+                            <td>2026-02-23</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>KKR</strong></td>
+                            <td>$103.60</td>
+                            <td>$92.42</td>
+                            <td class="negative">-10.8%</td>
+                            <td>4</td>
+                            <td><span class="badge badge-stop_loss">STOP_LOSS</span></td>
+                            <td>2026-02-23</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>KKR</strong></td>
+                            <td>$103.60</td>
+                            <td>$92.42</td>
+                            <td class="negative">-10.8%</td>
+                            <td>4</td>
+                            <td><span class="badge badge-stop_loss">STOP_LOSS</span></td>
+                            <td>2026-02-23</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer>
+        <p>Paper trading only. No real money at risk. Updated: 2026-03-04 01:11 UTC</p>
+    </footer>
+
+    <script>
+    const snapshots = [{"date": "2026-03-03", "total": 9890.434999999998, "cash": 3800.3599999999983, "invested": 6090.075, "return_pct": -1.0956500000000233}, {"date": "2026-03-04", "total": 9968.559999999998, "cash": 3800.3599999999983, "invested": 6168.2, "return_pct": -0.31440000000002327}];
+    if (snapshots.length > 0) {
+        const labels = snapshots.map(s => s.date);
+        new Chart(document.getElementById('valueChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Total Value',
+                        data: snapshots.map(s => s.total),
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3,
+                    },
+                    {
+                        label: 'Cash',
+                        data: snapshots.map(s => s.cash),
+                        borderColor: '#2ecc71',
+                        borderDash: [3, 3],
+                        borderWidth: 1.5,
+                        fill: false,
+                        tension: 0.3,
+                        pointRadius: 0,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#ccc' } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                return ctx.dataset.label + ': $' + ctx.parsed.y.toFixed(0);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { ticks: { color: '#888' }, grid: { color: '#333' } },
+                    y: {
+                        ticks: {
+                            color: '#888',
+                            callback: function(v) { return '$' + v.toFixed(0); }
+                        },
+                        grid: { color: '#333' }
+                    }
+                }
+            }
+        });
+    }
+    </script>
+</body>
+</html>

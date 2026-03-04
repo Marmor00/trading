@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETH Momentum | Trading Simulation Lab</title>
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="back-link">Back to Lab</a>
+        <h1>ETH Momentum</h1>
+        <p class="subtitle">Buy ETH on golden cross (SMA50 > SMA200), sell on death cross</p>
+    </header>
+
+    <main>
+        <!-- Key Metrics -->
+        <section class="metrics-grid">
+            <div class="metric">
+                <div class="metric-label">Total Value</div>
+                <div class="metric-value">$10,000</div>
+            </div>
+            <div class="metric negative">
+                <div class="metric-label">Return</div>
+                <div class="metric-value">0.0%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Win Rate</div>
+                <div class="metric-value">0%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Trades</div>
+                <div class="metric-value">0 closed</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Avg Win</div>
+                <div class="metric-value positive">0.0%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Avg Loss</div>
+                <div class="metric-value negative">0.0%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Best Trade</div>
+                <div class="metric-value positive">0.0%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Max Drawdown</div>
+                <div class="metric-value negative">0.0%</div>
+            </div>
+        </section>
+
+        <!-- Profile Config -->
+        <section class="config-section">
+            <h2>Configuration</h2>
+            <div class="config-grid">
+                <span>Asset Type: <strong>crypto</strong></span>
+                <span>Data Source: <strong>coingecko</strong></span>
+                <span>Initial Capital: <strong>$10000</strong></span>
+                <span>Position Size: <strong>50.0%</strong></span>
+                <span>Max Positions: <strong>2</strong></span>
+                <span>Stop Loss: <strong>-15.0%</strong></span>
+                <span>Take Profit: <strong>+30.0%</strong></span>
+                <span>Max Hold: <strong>120 days</strong></span>
+            </div>
+        </section>
+
+        <!-- Portfolio Value Chart -->
+        <section class="chart-section">
+            <h2>Portfolio Value Over Time</h2>
+            
+            <div class="chart-container">
+                <canvas id="valueChart"></canvas>
+            </div>
+            
+        </section>
+
+        <!-- Active Positions -->
+        
+
+        <!-- Closed Trades -->
+        
+    </main>
+
+    <footer>
+        <p>Paper trading only. No real money at risk. Updated: 2026-03-04 01:11 UTC</p>
+    </footer>
+
+    <script>
+    const snapshots = [{"date": "2026-03-03", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}];
+    if (snapshots.length > 0) {
+        const labels = snapshots.map(s => s.date);
+        new Chart(document.getElementById('valueChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Total Value',
+                        data: snapshots.map(s => s.total),
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3,
+                    },
+                    {
+                        label: 'Cash',
+                        data: snapshots.map(s => s.cash),
+                        borderColor: '#2ecc71',
+                        borderDash: [3, 3],
+                        borderWidth: 1.5,
+                        fill: false,
+                        tension: 0.3,
+                        pointRadius: 0,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#ccc' } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                return ctx.dataset.label + ': $' + ctx.parsed.y.toFixed(0);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { ticks: { color: '#888' }, grid: { color: '#333' } },
+                    y: {
+                        ticks: {
+                            color: '#888',
+                            callback: function(v) { return '$' + v.toFixed(0); }
+                        },
+                        grid: { color: '#333' }
+                    }
+                }
+            }
+        });
+    }
+    </script>
+</body>
+</html>

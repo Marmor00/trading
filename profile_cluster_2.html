@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cluster 2+ | Trading Simulation Lab</title>
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="back-link">Back to Lab</a>
+        <h1>Cluster 2+</h1>
+        <p class="subtitle">Buy when 2+ insiders are buying the same stock simultaneously</p>
+    </header>
+
+    <main>
+        <!-- Key Metrics -->
+        <section class="metrics-grid">
+            <div class="metric">
+                <div class="metric-label">Total Value</div>
+                <div class="metric-value">$9,994</div>
+            </div>
+            <div class="metric negative">
+                <div class="metric-label">Return</div>
+                <div class="metric-value">-0.1%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Win Rate</div>
+                <div class="metric-value">25%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Trades</div>
+                <div class="metric-value">4 closed</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Avg Win</div>
+                <div class="metric-value positive">28.3%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Avg Loss</div>
+                <div class="metric-value negative">-10.7%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Best Trade</div>
+                <div class="metric-value positive">28.3%</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Max Drawdown</div>
+                <div class="metric-value negative">0.0%</div>
+            </div>
+        </section>
+
+        <!-- Profile Config -->
+        <section class="config-section">
+            <h2>Configuration</h2>
+            <div class="config-grid">
+                <span>Asset Type: <strong>stock</strong></span>
+                <span>Data Source: <strong>openinsider</strong></span>
+                <span>Initial Capital: <strong>$10000</strong></span>
+                <span>Position Size: <strong>10.0%</strong></span>
+                <span>Max Positions: <strong>10</strong></span>
+                <span>Stop Loss: <strong>-10.0%</strong></span>
+                <span>Take Profit: <strong>+20.0%</strong></span>
+                <span>Max Hold: <strong>60 days</strong></span>
+            </div>
+        </section>
+
+        <!-- Portfolio Value Chart -->
+        <section class="chart-section">
+            <h2>Portfolio Value Over Time</h2>
+            
+            <div class="chart-container">
+                <canvas id="valueChart"></canvas>
+            </div>
+            
+        </section>
+
+        <!-- Active Positions -->
+        
+        <section class="table-section">
+            <h2>Active Positions (10)</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Company</th>
+                            <th>Entry</th>
+                            <th>Current</th>
+                            <th>Return</th>
+                            <th>Days</th>
+                            <th>Shares</th>
+                            <th>Insider</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td><strong>ABX</strong></td>
+                            <td>Abacus Global Management,</td>
+                            <td>$8.88</td>
+                            <td>$9.64</td>
+                            <td class="positive">8.6%</td>
+                            <td>11</td>
+                            <td>111</td>
+                            <td>McNealy Sean</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>ABX</strong></td>
+                            <td>Abacus Global Management,</td>
+                            <td>$8.88</td>
+                            <td>$9.64</td>
+                            <td class="positive">8.6%</td>
+                            <td>11</td>
+                            <td>100</td>
+                            <td>Kirby Kevin Scott</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>DLHC</strong></td>
+                            <td>Dlh Holdings Corp.</td>
+                            <td>$5.49</td>
+                            <td>$5.91</td>
+                            <td class="positive">7.7%</td>
+                            <td>11</td>
+                            <td>97</td>
+                            <td>Mink Brook Asset Man</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>WRB</strong></td>
+                            <td>Berkley W R Corp</td>
+                            <td>$70.80</td>
+                            <td>$72.64</td>
+                            <td class="positive">2.6%</td>
+                            <td>11</td>
+                            <td>8</td>
+                            <td>Mitsui Sumitomo Insu</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>AVBC</strong></td>
+                            <td>Avidia Bancorp, Inc.</td>
+                            <td>$18.38</td>
+                            <td>$18.69</td>
+                            <td class="positive">1.7%</td>
+                            <td>6</td>
+                            <td>26</td>
+                            <td>Jensen Barry H</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>TPL</strong></td>
+                            <td>Texas Pacific Land Corp</td>
+                            <td>$520.97</td>
+                            <td>$523.64</td>
+                            <td class="positive">0.5%</td>
+                            <td>6</td>
+                            <td>1</td>
+                            <td>Horizon Kinetics Ass</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>COFS</strong></td>
+                            <td>Choiceone Financial Servi</td>
+                            <td>$29.60</td>
+                            <td>$29.60</td>
+                            <td class="negative">0.0%</td>
+                            <td>2</td>
+                            <td>15</td>
+                            <td>Burke Michael J. Jr.</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>KFS</strong></td>
+                            <td>Kingsway Financial Servic</td>
+                            <td>$12.34</td>
+                            <td>$12.12</td>
+                            <td class="negative">-1.8%</td>
+                            <td>11</td>
+                            <td>35</td>
+                            <td>Hansen Kent A</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>KFS</strong></td>
+                            <td>Kingsway Financial Servic</td>
+                            <td>$12.34</td>
+                            <td>$12.12</td>
+                            <td class="negative">-1.8%</td>
+                            <td>11</td>
+                            <td>31</td>
+                            <td>Fitzgerald John Tayl</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>KELYA</strong></td>
+                            <td>Kelly Services Inc</td>
+                            <td>$9.48</td>
+                            <td>$9.31</td>
+                            <td class="negative">-1.8%</td>
+                            <td>6</td>
+                            <td>45</td>
+                            <td>Hunt James Christoph</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+
+        <!-- Closed Trades -->
+        
+        <section class="table-section">
+            <h2>Closed Trades (4)</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Entry</th>
+                            <th>Exit</th>
+                            <th>Return</th>
+                            <th>Days</th>
+                            <th>Reason</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td><strong>LEE</strong></td>
+                            <td>$7.20</td>
+                            <td>$9.24</td>
+                            <td class="positive">28.3%</td>
+                            <td>8</td>
+                            <td><span class="badge badge-take_profit">TAKE_PROFIT</span></td>
+                            <td>2026-02-27</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>KKR</strong></td>
+                            <td>$103.60</td>
+                            <td>$92.53</td>
+                            <td class="negative">-10.7%</td>
+                            <td>4</td>
+                            <td><span class="badge badge-stop_loss">STOP_LOSS</span></td>
+                            <td>2026-02-23</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>KKR</strong></td>
+                            <td>$103.60</td>
+                            <td>$92.50</td>
+                            <td class="negative">-10.7%</td>
+                            <td>4</td>
+                            <td><span class="badge badge-stop_loss">STOP_LOSS</span></td>
+                            <td>2026-02-23</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>KKR</strong></td>
+                            <td>$103.60</td>
+                            <td>$92.50</td>
+                            <td class="negative">-10.7%</td>
+                            <td>4</td>
+                            <td><span class="badge badge-stop_loss">STOP_LOSS</span></td>
+                            <td>2026-02-23</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer>
+        <p>Paper trading only. No real money at risk. Updated: 2026-03-04 01:11 UTC</p>
+    </footer>
+
+    <script>
+    const snapshots = [{"date": "2026-03-03", "total": 9946.471999999998, "cash": 4132.830999999999, "invested": 5813.641, "return_pct": -0.5352800000000207}, {"date": "2026-03-04", "total": 9993.711, "cash": 4132.830999999999, "invested": 5860.88, "return_pct": -0.06289000000000669}];
+    if (snapshots.length > 0) {
+        const labels = snapshots.map(s => s.date);
+        new Chart(document.getElementById('valueChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Total Value',
+                        data: snapshots.map(s => s.total),
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3,
+                    },
+                    {
+                        label: 'Cash',
+                        data: snapshots.map(s => s.cash),
+                        borderColor: '#2ecc71',
+                        borderDash: [3, 3],
+                        borderWidth: 1.5,
+                        fill: false,
+                        tension: 0.3,
+                        pointRadius: 0,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#ccc' } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                return ctx.dataset.label + ': $' + ctx.parsed.y.toFixed(0);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { ticks: { color: '#888' }, grid: { color: '#333' } },
+                    y: {
+                        ticks: {
+                            color: '#888',
+                            callback: function(v) { return '$' + v.toFixed(0); }
+                        },
+                        grid: { color: '#333' }
+                    }
+                }
+            }
+        });
+    }
+    </script>
+</body>
+</html>

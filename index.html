@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Simulation Lab</title>
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Trading Simulation Lab</h1>
+        <p class="subtitle">12 strategies competing | Paper trading | Updated: 2026-03-04 01:11 UTC</p>
+    </header>
+
+    <main>
+        <!-- Summary Cards -->
+        <section class="cards">
+            
+            <a href="profile_score_70.html" class="card positive">
+                <div class="card-rank">#1</div>
+                <div class="card-name">Score >=70</div>
+                <div class="card-asset">stock</div>
+                <div class="card-value">$10,086</div>
+                <div class="card-return">+0.9%</div>
+                <div class="card-details">
+                    <span>Active: 10</span>
+                    <span>Closed: 4</span>
+                    
+                    <span>WR: 25%</span>
+                    
+                </div>
+            </a>
+            
+            <a href="profile_crypto_btc.html" class="card ">
+                <div class="card-rank">#2</div>
+                <div class="card-name">BTC Momentum</div>
+                <div class="card-asset">crypto</div>
+                <div class="card-value">$10,000</div>
+                <div class="card-return">0.0%</div>
+                <div class="card-details">
+                    <span>Active: 0</span>
+                    <span>Closed: 0</span>
+                    
+                </div>
+            </a>
+            
+            <a href="profile_crypto_eth.html" class="card ">
+                <div class="card-rank">#3</div>
+                <div class="card-name">ETH Momentum</div>
+                <div class="card-asset">crypto</div>
+                <div class="card-value">$10,000</div>
+                <div class="card-return">0.0%</div>
+                <div class="card-details">
+                    <span>Active: 0</span>
+                    <span>Closed: 0</span>
+                    
+                </div>
+            </a>
+            
+            <a href="profile_sector_rotation.html" class="card ">
+                <div class="card-rank">#4</div>
+                <div class="card-name">Sector Rotation</div>
+                <div class="card-asset">etf</div>
+                <div class="card-value">$10,000</div>
+                <div class="card-return">0.0%</div>
+                <div class="card-details">
+                    <span>Active: 3</span>
+                    <span>Closed: 0</span>
+                    
+                </div>
+            </a>
+            
+            <a href="profile_spy_benchmark.html" class="card ">
+                <div class="card-rank">#5</div>
+                <div class="card-name">SPY Buy & Hold</div>
+                <div class="card-asset">etf</div>
+                <div class="card-value">$10,000</div>
+                <div class="card-return">0.0%</div>
+                <div class="card-details">
+                    <span>Active: 1</span>
+                    <span>Closed: 0</span>
+                    
+                </div>
+            </a>
+            
+            <a href="profile_cluster_2.html" class="card negative">
+                <div class="card-rank">#6</div>
+                <div class="card-name">Cluster 2+</div>
+                <div class="card-asset">stock</div>
+                <div class="card-value">$9,994</div>
+                <div class="card-return">-0.1%</div>
+                <div class="card-details">
+                    <span>Active: 10</span>
+                    <span>Closed: 4</span>
+                    
+                    <span>WR: 25%</span>
+                    
+                </div>
+            </a>
+            
+            <a href="profile_congress_large.html" class="card negative">
+                <div class="card-rank">#7</div>
+                <div class="card-name">Congress >$50k</div>
+                <div class="card-asset">stock</div>
+                <div class="card-value">$9,979</div>
+                <div class="card-return">-0.2%</div>
+                <div class="card-details">
+                    <span>Active: 3</span>
+                    <span>Closed: 0</span>
+                    
+                </div>
+            </a>
+            
+            <a href="profile_congress_all.html" class="card negative">
+                <div class="card-rank">#8</div>
+                <div class="card-name">Congress >$15k</div>
+                <div class="card-asset">stock</div>
+                <div class="card-value">$9,972</div>
+                <div class="card-return">-0.3%</div>
+                <div class="card-details">
+                    <span>Active: 4</span>
+                    <span>Closed: 0</span>
+                    
+                </div>
+            </a>
+            
+            <a href="profile_score_60.html" class="card negative">
+                <div class="card-rank">#9</div>
+                <div class="card-name">Score >=60</div>
+                <div class="card-asset">stock</div>
+                <div class="card-value">$9,969</div>
+                <div class="card-return">-0.3%</div>
+                <div class="card-details">
+                    <span>Active: 12</span>
+                    <span>Closed: 3</span>
+                    
+                    <span>WR: 0%</span>
+                    
+                </div>
+            </a>
+            
+            <a href="profile_value_500k.html" class="card negative">
+                <div class="card-rank">#10</div>
+                <div class="card-name">Value >$500k</div>
+                <div class="card-asset">stock</div>
+                <div class="card-value">$9,837</div>
+                <div class="card-return">-1.6%</div>
+                <div class="card-details">
+                    <span>Active: 8</span>
+                    <span>Closed: 3</span>
+                    
+                    <span>WR: 0%</span>
+                    
+                </div>
+            </a>
+            
+            <a href="profile_ceo_any.html" class="card negative">
+                <div class="card-rank">#11</div>
+                <div class="card-name">CEO/CFO</div>
+                <div class="card-asset">stock</div>
+                <div class="card-value">$9,708</div>
+                <div class="card-return">-2.9%</div>
+                <div class="card-details">
+                    <span>Active: 10</span>
+                    <span>Closed: 3</span>
+                    
+                    <span>WR: 0%</span>
+                    
+                </div>
+            </a>
+            
+            <a href="profile_score_80.html" class="card negative">
+                <div class="card-rank">#12</div>
+                <div class="card-name">Score >=80</div>
+                <div class="card-asset">stock</div>
+                <div class="card-value">$9,647</div>
+                <div class="card-return">-3.5%</div>
+                <div class="card-details">
+                    <span>Active: 8</span>
+                    <span>Closed: 2</span>
+                    
+                    <span>WR: 0%</span>
+                    
+                </div>
+            </a>
+            
+        </section>
+
+        <!-- Return Curves Chart -->
+        <section class="chart-section">
+            <h2>Return Curves</h2>
+            
+            <div class="chart-container">
+                <canvas id="returnChart"></canvas>
+            </div>
+            
+        </section>
+
+        <!-- Leaderboard Table -->
+        <section class="table-section">
+            <h2>Leaderboard</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Strategy</th>
+                            <th>Type</th>
+                            <th>Total Value</th>
+                            <th>Return</th>
+                            <th>Active</th>
+                            <th>Closed</th>
+                            <th>Win Rate</th>
+                            <th>Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td>1</td>
+                            <td><a href="profile_score_70.html">Score >=70</a></td>
+                            <td><span class="badge badge-stock">stock</span></td>
+                            <td>$10,086</td>
+                            <td class="positive">+0.9%</td>
+                            <td>10</td>
+                            <td>4</td>
+                            <td>25%</td>
+                            <td>openinsider</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>2</td>
+                            <td><a href="profile_crypto_btc.html">BTC Momentum</a></td>
+                            <td><span class="badge badge-crypto">crypto</span></td>
+                            <td>$10,000</td>
+                            <td class="negative">0.0%</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>coingecko</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>3</td>
+                            <td><a href="profile_crypto_eth.html">ETH Momentum</a></td>
+                            <td><span class="badge badge-crypto">crypto</span></td>
+                            <td>$10,000</td>
+                            <td class="negative">0.0%</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>coingecko</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>4</td>
+                            <td><a href="profile_sector_rotation.html">Sector Rotation</a></td>
+                            <td><span class="badge badge-etf">etf</span></td>
+                            <td>$10,000</td>
+                            <td class="negative">0.0%</td>
+                            <td>3</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>none</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>5</td>
+                            <td><a href="profile_spy_benchmark.html">SPY Buy & Hold</a></td>
+                            <td><span class="badge badge-etf">etf</span></td>
+                            <td>$10,000</td>
+                            <td class="negative">0.0%</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>none</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>6</td>
+                            <td><a href="profile_cluster_2.html">Cluster 2+</a></td>
+                            <td><span class="badge badge-stock">stock</span></td>
+                            <td>$9,994</td>
+                            <td class="negative">-0.1%</td>
+                            <td>10</td>
+                            <td>4</td>
+                            <td>25%</td>
+                            <td>openinsider</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>7</td>
+                            <td><a href="profile_congress_large.html">Congress >$50k</a></td>
+                            <td><span class="badge badge-stock">stock</span></td>
+                            <td>$9,979</td>
+                            <td class="negative">-0.2%</td>
+                            <td>3</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>congress</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>8</td>
+                            <td><a href="profile_congress_all.html">Congress >$15k</a></td>
+                            <td><span class="badge badge-stock">stock</span></td>
+                            <td>$9,972</td>
+                            <td class="negative">-0.3%</td>
+                            <td>4</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>congress</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>9</td>
+                            <td><a href="profile_score_60.html">Score >=60</a></td>
+                            <td><span class="badge badge-stock">stock</span></td>
+                            <td>$9,969</td>
+                            <td class="negative">-0.3%</td>
+                            <td>12</td>
+                            <td>3</td>
+                            <td>0%</td>
+                            <td>openinsider</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>10</td>
+                            <td><a href="profile_value_500k.html">Value >$500k</a></td>
+                            <td><span class="badge badge-stock">stock</span></td>
+                            <td>$9,837</td>
+                            <td class="negative">-1.6%</td>
+                            <td>8</td>
+                            <td>3</td>
+                            <td>0%</td>
+                            <td>openinsider</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>11</td>
+                            <td><a href="profile_ceo_any.html">CEO/CFO</a></td>
+                            <td><span class="badge badge-stock">stock</span></td>
+                            <td>$9,708</td>
+                            <td class="negative">-2.9%</td>
+                            <td>10</td>
+                            <td>3</td>
+                            <td>0%</td>
+                            <td>openinsider</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>12</td>
+                            <td><a href="profile_score_80.html">Score >=80</a></td>
+                            <td><span class="badge badge-stock">stock</span></td>
+                            <td>$9,647</td>
+                            <td class="negative">-3.5%</td>
+                            <td>8</td>
+                            <td>2</td>
+                            <td>0%</td>
+                            <td>openinsider</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Paper trading only. No real money at risk. Data updates Mon-Fri.</p>
+    </footer>
+
+    <script>
+    const chartData = {"labels": ["2026-03-03", "2026-03-04"], "datasets": [{"label": "CEO/CFO", "data": [-2.729357000000018, -2.9160850000000025], "borderColor": "#3498db", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Cluster 2+", "data": [-0.5352800000000207, -0.06289000000000669], "borderColor": "#e74c3c", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Congress >$15k", "data": [0.0, -0.2780000000000109], "borderColor": "#2ecc71", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Congress >$50k", "data": [0.0, -0.2085000000000218], "borderColor": "#f39c12", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "BTC Momentum", "data": [0.0, null], "borderColor": "#9b59b6", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "ETH Momentum", "data": [0.0, null], "borderColor": "#1abc9c", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Score >=60", "data": [-1.0956500000000233, -0.31440000000002327], "borderColor": "#e67e22", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Score >=70", "data": [0.7639800000000104, 0.8641100000000006], "borderColor": "#34495e", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Score >=80", "data": [-3.7388300000000165, -3.5250800000000164], "borderColor": "#16a085", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Sector Rotation", "data": [0.0, 0.0], "borderColor": "#c0392b", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "SPY Buy & Hold", "data": [0.0, 0.0], "borderColor": "#888888", "borderDash": [5, 5], "borderWidth": 2, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Value >$500k", "data": [-1.232579999999998, -1.6295000000000073], "borderColor": "#e74c3c", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}]};
+    if (chartData.labels.length > 0) {
+        new Chart(document.getElementById('returnChart'), {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: {
+                        labels: { color: '#ccc', font: { size: 12 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                return ctx.dataset.label + ': ' + (ctx.parsed.y != null ? ctx.parsed.y.toFixed(1) + '%' : 'N/A');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#888', maxTicksLimit: 15 },
+                        grid: { color: '#333' }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#888',
+                            callback: function(v) { return v.toFixed(1) + '%'; }
+                        },
+                        grid: { color: '#333' }
+                    }
+                }
+            }
+        });
+    }
+    </script>
+</body>
+</html>

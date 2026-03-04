@@ -47,8 +47,31 @@ def get_leaderboard(conn):
         active = c.fetchone()[0]
 
         # Get profile metadata
-        c.execute("SELECT display_name, description, asset_type, data_source FROM profiles WHERE profile_id=?", (pid,))
+        c.execute("SELECT display_name, description, asset_type, data_source, created_at FROM profiles WHERE profile_id=?", (pid,))
         meta = c.fetchone()
+
+        # Days active: from profile creation to now
+        days_active = 0
+        if meta and meta[4]:
+            try:
+                created = datetime.strptime(str(meta[4])[:10], '%Y-%m-%d')
+                days_active = (datetime.now() - created).days
+            except (ValueError, TypeError):
+                pass
+
+        # Last signal: most recent signal logged for this profile
+        last_signal = '-'
+        try:
+            c.execute("""
+                SELECT DATE(created_at) FROM signals_log
+                WHERE profile_id=? AND was_executed=1
+                ORDER BY created_at DESC LIMIT 1
+            """, (pid,))
+            sig_row = c.fetchone()
+            if sig_row and sig_row[0]:
+                last_signal = sig_row[0]
+        except Exception:
+            pass
 
         leaderboard.append({
             'rank': i + 1,
@@ -67,6 +90,8 @@ def get_leaderboard(conn):
             'win_rate': wr,
             'active': active,
             'updated_at': row[8] or '',
+            'days_active': days_active,
+            'last_signal': last_signal,
         })
 
     return leaderboard

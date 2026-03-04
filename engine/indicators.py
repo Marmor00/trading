@@ -77,7 +77,7 @@ def macd(prices: List[float], fast: int = 12, slow: int = 26, signal: int = 9) -
 
     histogram = macd_line - signal_line
 
-    # Crossover detection
+    # Crossover detection (exact: today only)
     prev_macd = macd_series[-2] if len(macd_series) >= 2 else None
     prev_signal = ema(macd_series[:-1], signal) if len(macd_series) >= signal + 1 else None
 
@@ -87,12 +87,32 @@ def macd(prices: List[float], fast: int = 12, slow: int = 26, signal: int = 9) -
         crossover_up = prev_macd <= prev_signal and macd_line > signal_line
         crossover_down = prev_macd >= prev_signal and macd_line < signal_line
 
+    # Recent crossover (within last 10 bars / ~2 weeks) — catches signals missed by exact-day check
+    recent_crossover_up = crossover_up
+    recent_crossover_down = crossover_down
+    lookback = min(11, len(macd_series) - signal + 1)
+    if lookback >= 2:
+        recent_hists = []
+        for k in range(lookback):
+            idx = len(macd_series) - lookback + k + 1
+            sl = ema(macd_series[:idx], signal)
+            if sl is not None:
+                recent_hists.append(macd_series[idx - 1] - sl)
+        for j in range(1, len(recent_hists)):
+            if recent_hists[j - 1] <= 0 and recent_hists[j] > 0:
+                recent_crossover_up = True
+            if recent_hists[j - 1] >= 0 and recent_hists[j] < 0:
+                recent_crossover_down = True
+
     return {
         'macd_line': macd_line,
         'signal_line': signal_line,
         'histogram': histogram,
         'crossover_up': crossover_up,
         'crossover_down': crossover_down,
+        'recent_crossover_up': recent_crossover_up,
+        'recent_crossover_down': recent_crossover_down,
+        'bullish': histogram > 0,
     }
 
 
@@ -141,11 +161,36 @@ def sma_crossover(prices: List[float], fast_period: int = 50, slow_period: int =
     slow_prev = sma(prices[:-1], slow_period)
     if any(v is None for v in [fast_now, slow_now, fast_prev, slow_prev]):
         return None
+
+    golden_cross = fast_prev <= slow_prev and fast_now > slow_now
+    death_cross = fast_prev >= slow_prev and fast_now < slow_now
+
+    # Recent crossover (within last 10 days / ~2 weeks) — SMA crosses are rare
+    recent_golden = golden_cross
+    recent_death = death_cross
+    diffs = []
+    for offset in range(min(11, len(prices) - slow_period)):
+        end = len(prices) - offset
+        f = sma(prices[:end], fast_period)
+        s = sma(prices[:end], slow_period)
+        if f is not None and s is not None:
+            diffs.append(f - s)
+        else:
+            break
+    # diffs[0] = today, diffs[1] = yesterday, etc.
+    for i in range(len(diffs) - 1):
+        if diffs[i] > 0 and diffs[i + 1] <= 0:
+            recent_golden = True
+        if diffs[i] < 0 and diffs[i + 1] >= 0:
+            recent_death = True
+
     return {
         'fast_sma': fast_now,
         'slow_sma': slow_now,
-        'golden_cross': fast_prev <= slow_prev and fast_now > slow_now,
-        'death_cross': fast_prev >= slow_prev and fast_now < slow_now,
+        'golden_cross': golden_cross,
+        'death_cross': death_cross,
+        'recent_golden_cross': recent_golden,
+        'recent_death_cross': recent_death,
         'bullish': fast_now > slow_now,
     }
 

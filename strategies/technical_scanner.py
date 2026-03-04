@@ -62,11 +62,11 @@ SCANNER_PROFILES = [
     {
         'id': 'rsi_oversold_mega',
         'display_name': 'RSI Oversold (Mega)',
-        'description': 'Buy mega-cap stocks when RSI drops below 30 (oversold)',
+        'description': 'Buy mega-cap stocks when RSI drops below 35 (oversold)',
         'indicator': 'rsi',
         'universe': 'mega_cap',
         'buy_condition': 'rsi_below',
-        'buy_threshold': 30,
+        'buy_threshold': 35,
         'sell_condition': 'rsi_above',
         'sell_threshold': 70,
         'position_size_pct': 10,
@@ -78,11 +78,11 @@ SCANNER_PROFILES = [
     {
         'id': 'rsi_oversold_growth',
         'display_name': 'RSI Oversold (Growth)',
-        'description': 'Buy growth stocks when RSI drops below 25 (deeply oversold)',
+        'description': 'Buy growth stocks when RSI drops below 30 (oversold)',
         'indicator': 'rsi',
         'universe': 'tech_growth',
         'buy_condition': 'rsi_below',
-        'buy_threshold': 25,
+        'buy_threshold': 30,
         'sell_condition': 'rsi_above',
         'sell_threshold': 75,
         'position_size_pct': 8,
@@ -140,11 +140,11 @@ SCANNER_PROFILES = [
     {
         'id': 'bband_bounce_mega',
         'display_name': 'BB Bounce (Mega)',
-        'description': 'Buy mega-cap stocks touching lower Bollinger Band (mean reversion)',
+        'description': 'Buy mega-cap stocks near lower Bollinger Band (mean reversion)',
         'indicator': 'bollinger',
         'universe': 'mega_cap',
         'buy_condition': 'bb_below',
-        'buy_threshold': 0.05,   # pct_b < 5% = near lower band
+        'buy_threshold': 0.20,   # pct_b < 20% = near lower band
         'sell_condition': 'bb_above',
         'sell_threshold': 0.95,  # pct_b > 95% = near upper band
         'position_size_pct': 10,
@@ -156,11 +156,11 @@ SCANNER_PROFILES = [
     {
         'id': 'bband_bounce_etf',
         'display_name': 'BB Bounce (ETFs)',
-        'description': 'Buy ETFs touching lower Bollinger Band',
+        'description': 'Buy ETFs near lower Bollinger Band',
         'indicator': 'bollinger',
         'universe': 'etf_universe',
         'buy_condition': 'bb_below',
-        'buy_threshold': 0.05,
+        'buy_threshold': 0.20,
         'sell_condition': 'bb_above',
         'sell_threshold': 0.95,
         'position_size_pct': 15,
@@ -190,11 +190,11 @@ SCANNER_PROFILES = [
     {
         'id': 'w52_low_mega',
         'display_name': '52W Low Buy (Mega)',
-        'description': 'Buy mega-cap stocks within 15% of 52-week low (deep value)',
+        'description': 'Buy mega-cap stocks within 25% of 52-week low (deep value)',
         'indicator': 'week52',
         'universe': 'mega_cap',
         'buy_condition': 'near_52w_low',
-        'buy_threshold': 15,  # position <= 15% of annual range
+        'buy_threshold': 25,  # position <= 25% of annual range
         'sell_condition': 'near_52w_high',
         'sell_threshold': 85,
         'position_size_pct': 10,
@@ -312,10 +312,11 @@ class TechnicalScannerStrategy(BaseStrategy):
             macd_data = data.get('macd')
             if not macd_data:
                 return None
-            if buy_condition == 'macd_crossover_up' and macd_data.get('crossover_up'):
+            if buy_condition == 'macd_crossover_up' and macd_data.get('recent_crossover_up'):
                 hist = macd_data.get('histogram', 0)
                 confidence = min(0.5 + abs(hist) * 10, 1.0)
-                return (confidence, f"MACD bullish crossover (histogram={hist:.4f})")
+                fresh = " (today)" if macd_data.get('crossover_up') else " (recent)"
+                return (confidence, f"MACD bullish crossover{fresh} (histogram={hist:.4f})")
             return None
 
         elif indicator == 'bollinger':
@@ -332,8 +333,9 @@ class TechnicalScannerStrategy(BaseStrategy):
             cross = data.get('sma_cross_50_200')
             if not cross:
                 return None
-            if buy_condition == 'golden_cross' and cross.get('golden_cross'):
-                return (0.8, f"Golden cross: SMA50 ${cross['fast_sma']:.0f} > SMA200 ${cross['slow_sma']:.0f}")
+            if buy_condition == 'golden_cross' and cross.get('recent_golden_cross'):
+                fresh = " (today)" if cross.get('golden_cross') else " (recent)"
+                return (0.8, f"Golden cross{fresh}: SMA50 ${cross['fast_sma']:.0f} > SMA200 ${cross['slow_sma']:.0f}")
             return None
 
         elif indicator == 'week52':

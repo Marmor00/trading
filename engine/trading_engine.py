@@ -64,6 +64,10 @@ class TradingEngine:
         if not price:
             return False, 0
 
+        # Simulate slippage: pay slightly more on buys (realistic fill price)
+        slippage = 0.002 if profile.asset_type == AssetType.CRYPTO else 0.001
+        price = price * (1 + slippage)
+
         position_size = available_cash * (profile.position_size_pct / 100)
         commission = profile.commission
 
@@ -152,6 +156,10 @@ class TradingEngine:
         if not price:
             conn.close()
             return False
+
+        # Simulate slippage: receive slightly less on sells
+        slippage = 0.002 if profile.asset_type == AssetType.CRYPTO else 0.001
+        price = price * (1 - slippage)
 
         commission = profile.commission
         if profile.asset_type == AssetType.CRYPTO:

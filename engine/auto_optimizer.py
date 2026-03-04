@@ -168,13 +168,29 @@ class AutoOptimizer:
             return actions
 
         # Find eligible profiles (active, good performance, enough data)
-        candidates = [
-            p for p in profiles
-            if p['is_active']
-            and p.get('return_pct', 0) > MIN_RETURN_TO_SPAWN
-            and p.get('win_rate', 0) > MIN_WIN_RATE_TO_SPAWN
-            and p.get('total_closed', 0) >= MIN_CLOSED_TRADES
-        ]
+        candidates = []
+        for p in profiles:
+            if not p['is_active']:
+                continue
+            if p.get('return_pct', 0) <= MIN_RETURN_TO_SPAWN:
+                continue
+            if p.get('win_rate', 0) <= MIN_WIN_RATE_TO_SPAWN:
+                continue
+            if p.get('total_closed', 0) < MIN_CLOSED_TRADES:
+                continue
+            # Walk-forward guard: verify performance is consistent, not just recent luck
+            if not self._passes_consistency_check(p['profile_id']):
+                self._log_action({
+                    'action': 'SKIP',
+                    'profile_id': p['profile_id'],
+                    'reason': (
+                        f"Skipped {p['display_name']} for spawn: failed consistency check. "
+                        f"First-half and second-half trade results are inconsistent, "
+                        f"suggesting the performance may not be sustainable."
+                    ),
+                })
+                continue
+            candidates.append(p)
 
         if not candidates:
             return actions
@@ -397,6 +413,39 @@ class AutoOptimizer:
             return False
         finally:
             conn.close()
+
+    # ------------------------------------------
+    # Walk-forward consistency check
+    # ------------------------------------------
+
+    def _passes_consistency_check(self, profile_id: str) -> bool:
+        """Check that a profile's performance is consistent across time.
+
+        Splits closed trades into first and second half chronologically.
+        Both halves must have a positive average return. This prevents
+        spawning variations of profiles whose good numbers come from
+        one lucky early trade followed by mediocre results.
+        """
+        conn = self.db.connect()
+        c = conn.cursor()
+        c.execute("""
+            SELECT return_pct FROM trades
+            WHERE strategy = ? AND status = 'CLOSED' AND return_pct IS NOT NULL
+            ORDER BY exit_date ASC
+        """, (profile_id,))
+        returns = [r[0] for r in c.fetchall()]
+        conn.close()
+
+        if len(returns) < 4:
+            # Not enough trades to split meaningfully — allow spawn
+            return True
+
+        mid = len(returns) // 2
+        first_half_avg = sum(returns[:mid]) / mid
+        second_half_avg = sum(returns[mid:]) / (len(returns) - mid)
+
+        # Both halves must be net positive
+        return first_half_avg > 0 and second_half_avg > 0
 
     # ------------------------------------------
     # Data queries

@@ -61,6 +61,8 @@
                             <th>Active</th>
                             <th>Closed</th>
                             <th>Win Rate</th>
+                            <th>Days</th>
+                            <th>Last Signal</th>
                             <th>Source</th>
                         </tr>
                     </thead>
@@ -75,6 +77,8 @@
                             <td>{{ p.active }}</td>
                             <td>{{ p.wins + p.losses }}</td>
                             <td>{% if p.wins + p.losses > 0 %}{{ "%.0f" | format(p.win_rate) }}%{% else %}-{% endif %}</td>
+                            <td>{{ p.days_active }}d</td>
+                            <td>{{ p.last_signal }}</td>
                             <td>{{ p.data_source }}</td>
                         </tr>
                         {% endfor %}

@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BTC Momentum | Trading Simulation Lab</title>
+    <title>RSI Oversold (Mega) | Trading Simulation Lab</title>
     <link rel="stylesheet" href="static/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <header>
         <a href="index.html" class="back-link">Back to Lab</a>
-        <h1>BTC Momentum</h1>
-        <p class="subtitle">Buy BTC on golden cross (SMA50 > SMA200), sell on death cross</p>
+        <h1>RSI Oversold (Mega)</h1>
+        <p class="subtitle">Buy mega-cap stocks when RSI drops below 30 (oversold)</p>
     </header>
 
     <main>
@@ -55,14 +55,14 @@
         <section class="config-section">
             <h2>Configuration</h2>
             <div class="config-grid">
-                <span>Asset Type: <strong>crypto</strong></span>
-                <span>Data Source: <strong>coingecko</strong></span>
+                <span>Asset Type: <strong>stock</strong></span>
+                <span>Data Source: <strong>market_scanner</strong></span>
                 <span>Initial Capital: <strong>$10000</strong></span>
-                <span>Position Size: <strong>50.0%</strong></span>
-                <span>Max Positions: <strong>2</strong></span>
-                <span>Stop Loss: <strong>-15.0%</strong></span>
-                <span>Take Profit: <strong>+30.0%</strong></span>
-                <span>Max Hold: <strong>120 days</strong></span>
+                <span>Position Size: <strong>10.0%</strong></span>
+                <span>Max Positions: <strong>8</strong></span>
+                <span>Stop Loss: <strong>-8.0%</strong></span>
+                <span>Take Profit: <strong>+15.0%</strong></span>
+                <span>Max Hold: <strong>30 days</strong></span>
             </div>
         </section>
 
@@ -88,7 +88,7 @@
     </footer>
 
     <script>
-    const snapshots = [{"date": "2026-03-03", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}];
+    const snapshots = [{"date": "2026-03-04", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}];
     if (snapshots.length > 0) {
         const labels = snapshots.map(s => s.date);
         new Chart(document.getElementById('valueChart'), {

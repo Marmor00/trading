@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BTC Momentum | Trading Simulation Lab</title>
+    <title>ADA Momentum | Trading Simulation Lab</title>
     <link rel="stylesheet" href="static/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <header>
         <a href="index.html" class="back-link">Back to Lab</a>
-        <h1>BTC Momentum</h1>
-        <p class="subtitle">Buy BTC on golden cross (SMA50 > SMA200), sell on death cross</p>
+        <h1>ADA Momentum</h1>
+        <p class="subtitle">Buy ADA on golden cross + RSI filter (skip if overbought)</p>
     </header>
 
     <main>
@@ -60,9 +60,9 @@
                 <span>Initial Capital: <strong>$10000</strong></span>
                 <span>Position Size: <strong>50.0%</strong></span>
                 <span>Max Positions: <strong>2</strong></span>
-                <span>Stop Loss: <strong>-15.0%</strong></span>
-                <span>Take Profit: <strong>+30.0%</strong></span>
-                <span>Max Hold: <strong>120 days</strong></span>
+                <span>Stop Loss: <strong>-25.0%</strong></span>
+                <span>Take Profit: <strong>+50.0%</strong></span>
+                <span>Max Hold: <strong>90 days</strong></span>
             </div>
         </section>
 
@@ -70,9 +70,7 @@
         <section class="chart-section">
             <h2>Portfolio Value Over Time</h2>
             
-            <div class="chart-container">
-                <canvas id="valueChart"></canvas>
-            </div>
+            <p class="no-data">Waiting for daily snapshots...</p>
             
         </section>
 
@@ -88,7 +86,7 @@
     </footer>
 
     <script>
-    const snapshots = [{"date": "2026-03-03", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}];
+    const snapshots = [];
     if (snapshots.length > 0) {
         const labels = snapshots.map(s => s.date);
         new Chart(document.getElementById('valueChart'), {

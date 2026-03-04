@@ -271,6 +271,16 @@ tr:hover {
 .badge-stop_loss { background: #3d1f1f; color: #f85149; }
 .badge-take_profit { background: #1a3a2a; color: #3fb950; }
 .badge-time_exit { background: #2d2a1e; color: #d29922; }
+.badge-optimizer_retire { background: #3d1f1f; color: #f85149; }
+
+.badge-spawn { background: #1a3a2a; color: #3fb950; }
+.badge-retire { background: #3d1f1f; color: #f85149; }
+.badge-skip { background: #2d2d2d; color: #8b949e; }
+.badge-adjust { background: #2d2a1e; color: #d29922; }
+
+.retired-row { opacity: 0.6; }
+.reason-cell { max-width: 400px; font-size: 0.8rem; color: #8b949e; }
+.section-note { font-size: 0.85rem; color: #8b949e; margin-bottom: 0.8rem; }
 
 /* Positive/Negative Colors */
 .positive { color: #3fb950; }

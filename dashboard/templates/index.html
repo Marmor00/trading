@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Simulation Lab</title>
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Trading Simulation Lab</h1>
+        <p class="subtitle">{{ profile_count }} strategies competing | Paper trading | Updated: {{ updated_at }}</p>
+    </header>
+
+    <main>
+        <!-- Summary Cards -->
+        <section class="cards">
+            {% for p in leaderboard %}
+            <a href="profile_{{ p.profile_id }}.html" class="card {{ 'positive' if p.return_pct > 0 else ('negative' if p.return_pct < 0 else '') }}">
+                <div class="card-rank">#{{ p.rank }}</div>
+                <div class="card-name">{{ p.display_name }}</div>
+                <div class="card-asset">{{ p.asset_type }}</div>
+                <div class="card-value">{{ p.total | fmt_money }}</div>
+                <div class="card-return">{{ p.return_pct | fmt_pct }}</div>
+                <div class="card-details">
+                    <span>Active: {{ p.active }}</span>
+                    <span>Closed: {{ p.wins + p.losses }}</span>
+                    {% if p.wins + p.losses > 0 %}
+                    <span>WR: {{ "%.0f" | format(p.win_rate) }}%</span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </section>
+
+        <!-- Return Curves Chart -->
+        <section class="chart-section">
+            <h2>Return Curves</h2>
+            {% if return_curves_json != '{"labels": [], "datasets": []}' %}
+            <div class="chart-container">
+                <canvas id="returnChart"></canvas>
+            </div>
+            {% else %}
+            <p class="no-data">Waiting for daily snapshots... Charts will appear after 2-3 days of data.</p>
+            {% endif %}
+        </section>
+
+        <!-- Leaderboard Table -->
+        <section class="table-section">
+            <h2>Leaderboard</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Strategy</th>
+                            <th>Type</th>
+                            <th>Total Value</th>
+                            <th>Return</th>
+                            <th>Active</th>
+                            <th>Closed</th>
+                            <th>Win Rate</th>
+                            <th>Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in leaderboard %}
+                        <tr>
+                            <td>{{ p.rank }}</td>
+                            <td><a href="profile_{{ p.profile_id }}.html">{{ p.display_name }}</a></td>
+                            <td><span class="badge badge-{{ p.asset_type }}">{{ p.asset_type }}</span></td>
+                            <td>{{ p.total | fmt_money }}</td>
+                            <td class="{{ 'positive' if p.return_pct > 0 else 'negative' }}">{{ p.return_pct | fmt_pct }}</td>
+                            <td>{{ p.active }}</td>
+                            <td>{{ p.wins + p.losses }}</td>
+                            <td>{% if p.wins + p.losses > 0 %}{{ "%.0f" | format(p.win_rate) }}%{% else %}-{% endif %}</td>
+                            <td>{{ p.data_source }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Paper trading only. No real money at risk. Data updates Mon-Fri.</p>
+    </footer>
+
+    <script>
+    const chartData = {{ return_curves_json | safe }};
+    if (chartData.labels.length > 0) {
+        new Chart(document.getElementById('returnChart'), {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: {
+                        labels: { color: '#ccc', font: { size: 12 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                return ctx.dataset.label + ': ' + (ctx.parsed.y != null ? ctx.parsed.y.toFixed(1) + '%' : 'N/A');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#888', maxTicksLimit: 15 },
+                        grid: { color: '#333' }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#888',
+                            callback: function(v) { return v.toFixed(1) + '%'; }
+                        },
+                        grid: { color: '#333' }
+                    }
+                }
+            }
+        });
+    }
+    </script>
+</body>
+</html>

@@ -76,8 +76,12 @@ def get_return_curves(conn):
     """Get time-series data for return curves chart."""
     c = conn.cursor()
 
+    # Only show active profiles in return curves
     c.execute("""
-        SELECT DISTINCT profile_id FROM portfolio_snapshots ORDER BY profile_id
+        SELECT DISTINCT ps.profile_id FROM portfolio_snapshots ps
+        JOIN profiles pr ON pr.profile_id = ps.profile_id
+        WHERE pr.is_active = 1
+        ORDER BY ps.profile_id
     """)
     profile_ids = [row[0] for row in c.fetchall()]
 
@@ -87,10 +91,14 @@ def get_return_curves(conn):
     if not dates or not profile_ids:
         return {'labels': [], 'datasets': []}
 
-    # Colors for each profile
+    # Colors for each profile (30+ to support up to 35 profiles)
     colors = [
         '#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6',
         '#1abc9c', '#e67e22', '#34495e', '#16a085', '#c0392b',
+        '#2980b9', '#d35400', '#27ae60', '#8e44ad', '#f1c40f',
+        '#e91e63', '#00bcd4', '#ff9800', '#4caf50', '#673ab7',
+        '#009688', '#ff5722', '#607d8b', '#795548', '#cddc39',
+        '#03a9f4', '#e040fb', '#76ff03', '#ff6e40', '#18ffff',
     ]
 
     datasets = []
@@ -237,6 +245,41 @@ def get_profile_detail(conn, profile_id):
     }
 
 
+def get_optimizer_log(conn, limit=20):
+    """Get recent optimizer actions."""
+    c = conn.cursor()
+    try:
+        c.execute("""
+            SELECT log_date, action, profile_id, base_profile_id, reason
+            FROM optimizer_log
+            ORDER BY created_at DESC
+            LIMIT ?
+        """, (limit,))
+        return [{'date': r[0], 'action': r[1], 'profile_id': r[2],
+                 'base': r[3], 'reason': r[4]} for r in c.fetchall()]
+    except Exception:
+        return []
+
+
+def get_retired_profiles(conn):
+    """Get retired (inactive) profiles for the graveyard section."""
+    c = conn.cursor()
+    try:
+        c.execute("""
+            SELECT p.profile_id, p.display_name, p.retired_date, p.spawned_from,
+                   pt.return_pct, pt.wins, pt.losses
+            FROM profiles p
+            LEFT JOIN portfolios pt ON pt.strategy = p.profile_id
+            WHERE p.is_active = 0 AND p.retired_date IS NOT NULL
+            ORDER BY p.retired_date DESC
+        """)
+        return [{'profile_id': r[0], 'display_name': r[1], 'retired_date': r[2],
+                 'spawned_from': r[3], 'return_pct': r[4] or 0,
+                 'wins': r[5] or 0, 'losses': r[6] or 0} for r in c.fetchall()]
+    except Exception:
+        return []
+
+
 # ============================================
 # HTML GENERATION
 # ============================================
@@ -268,6 +311,8 @@ def generate_dashboard():
     # Generate index page
     leaderboard = get_leaderboard(conn)
     return_curves = get_return_curves(conn)
+    optimizer_log = get_optimizer_log(conn)
+    retired = get_retired_profiles(conn)
     now = datetime.now().strftime('%Y-%m-%d %H:%M UTC')
 
     try:
@@ -275,6 +320,8 @@ def generate_dashboard():
         index_html = index_template.render(
             leaderboard=leaderboard,
             return_curves_json=json.dumps(return_curves),
+            optimizer_log=optimizer_log,
+            retired_profiles=retired,
             updated_at=now,
             profile_count=len(leaderboard),
         )

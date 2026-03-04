@@ -5,6 +5,7 @@ Free API, 30 calls/min, no API key required.
 Source: https://www.coingecko.com/en/api
 """
 
+import time
 import requests
 from datetime import datetime
 
@@ -13,6 +14,9 @@ from datetime import datetime
 CRYPTO_IDS = {
     'BTC': 'bitcoin',
     'ETH': 'ethereum',
+    'SOL': 'solana',
+    'ADA': 'cardano',
+    'DOGE': 'dogecoin',
 }
 
 
@@ -38,6 +42,7 @@ def fetch_crypto_data():
         data = _fetch_coin_data(ticker, coin_id)
         if data:
             results[ticker] = data
+        time.sleep(2)  # Respect CoinGecko rate limit (30 calls/min)
 
     print(f"  OK {len(results)} coins fetched")
     return results
@@ -75,12 +80,17 @@ def _fetch_coin_data(ticker, coin_id):
         if prev_sma_50 and sma_200:
             fresh_cross = prev_sma_50 < sma_200 and sma_50 > sma_200
 
+        # Calculate RSI
+        from engine.indicators import rsi as calc_rsi
+        rsi_14 = calc_rsi(prices, 14)
+
         return {
             'price': current_price,
             'sma_50': sma_50,
             'sma_200': sma_200,
             'golden_cross': golden_cross,
             'fresh_golden_cross': fresh_cross,
+            'rsi_14': rsi_14,
             'prices_history': prices[-30:],  # Last 30 days for context
         }
 

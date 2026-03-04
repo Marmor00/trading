@@ -82,10 +82,71 @@
                 </table>
             </div>
         </section>
+
+        <!-- Optimizer Log -->
+        {% if optimizer_log %}
+        <section class="table-section">
+            <h2>Optimizer Activity</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Action</th>
+                            <th>Profile</th>
+                            <th>Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in optimizer_log %}
+                        <tr>
+                            <td>{{ log.date }}</td>
+                            <td><span class="badge badge-{{ log.action | lower }}">{{ log.action }}</span></td>
+                            <td>{{ log.profile_id }}</td>
+                            <td class="reason-cell">{{ log.reason }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Retired Profiles -->
+        {% if retired_profiles %}
+        <section class="table-section">
+            <h2>Retired Profiles</h2>
+            <p class="section-note">These profiles were auto-spawned by the optimizer and later retired due to underperformance.</p>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Profile</th>
+                            <th>Based On</th>
+                            <th>Final Return</th>
+                            <th>W/L</th>
+                            <th>Retired</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in retired_profiles %}
+                        <tr class="retired-row">
+                            <td>{{ r.display_name }}</td>
+                            <td>{{ r.spawned_from or '-' }}</td>
+                            <td class="{{ 'positive' if r.return_pct > 0 else 'negative' }}">{{ r.return_pct | fmt_pct }}</td>
+                            <td>{{ r.wins }}W / {{ r.losses }}L</td>
+                            <td>{{ r.retired_date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        {% endif %}
     </main>
 
     <footer>
-        <p>Paper trading only. No real money at risk. Data updates Mon-Fri.</p>
+        <p>Paper trading only. No real money at risk. Auto-optimizer runs every Friday.</p>
     </footer>
 
     <script>

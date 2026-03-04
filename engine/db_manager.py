@@ -161,10 +161,35 @@ class DbManager:
             )
         """)
 
+        # New table: optimizer log
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS optimizer_log (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                log_date TEXT NOT NULL,
+                action TEXT NOT NULL,
+                profile_id TEXT NOT NULL,
+                base_profile_id TEXT,
+                reason TEXT NOT NULL,
+                params_json TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
         # Add columns to existing trades table
         for alter in [
             "ALTER TABLE trades ADD COLUMN asset_type TEXT DEFAULT 'stock'",
             "ALTER TABLE trades ADD COLUMN profile_id TEXT",
+        ]:
+            try:
+                c.execute(alter)
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
+        # Add columns to profiles table for optimizer
+        for alter in [
+            "ALTER TABLE profiles ADD COLUMN spawned_from TEXT",
+            "ALTER TABLE profiles ADD COLUMN spawned_date TEXT",
+            "ALTER TABLE profiles ADD COLUMN retired_date TEXT",
         ]:
             try:
                 c.execute(alter)

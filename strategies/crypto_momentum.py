@@ -1,8 +1,9 @@
 """
-Crypto Momentum strategy: Golden Cross on BTC and ETH.
+Crypto Momentum strategy: Golden Cross on BTC, ETH, SOL, ADA, DOGE.
 
 Buy when 50-day SMA crosses above 200-day SMA (golden cross).
-Sell when 50-day SMA crosses below 200-day SMA (death cross).
+Optional RSI filter: skip buy if RSI > 70 (overbought).
+Sell via stop-loss/take-profit/time exits.
 
 Uses CoinGecko free API for price data.
 Runs daily (crypto markets are 24/7).
@@ -26,16 +27,16 @@ class CryptoMomentumStrategy(BaseStrategy):
                 asset_type=AssetType.CRYPTO,
                 data_source='coingecko',
                 initial_capital=10000.0,
-                position_size_pct=50,  # Larger positions for single-asset strategy
-                max_positions=2,       # Allow 2 entries
-                stop_loss_pct=-15.0,   # Wider stop for crypto volatility
+                position_size_pct=50,
+                max_positions=2,
+                stop_loss_pct=-15.0,
                 take_profit_pct=30.0,
-                max_holding_days=120,  # Longer hold for trend following
+                max_holding_days=120,
                 commission=0.0,
                 schedule='daily',
                 extra_params={
                     'coin': 'BTC',
-                    'commission_pct': 0.1,  # 0.1% per trade (typical exchange fee)
+                    'commission_pct': 0.1,
                 },
             ),
             ProfileConfig(
@@ -55,6 +56,66 @@ class CryptoMomentumStrategy(BaseStrategy):
                 extra_params={
                     'coin': 'ETH',
                     'commission_pct': 0.1,
+                },
+            ),
+            ProfileConfig(
+                profile_id='crypto_sol',
+                display_name='SOL Momentum',
+                description='Buy SOL on golden cross + RSI filter (skip if overbought)',
+                asset_type=AssetType.CRYPTO,
+                data_source='coingecko',
+                initial_capital=10000.0,
+                position_size_pct=50,
+                max_positions=2,
+                stop_loss_pct=-20.0,   # Wider stop for altcoin volatility
+                take_profit_pct=40.0,
+                max_holding_days=90,
+                commission=0.0,
+                schedule='daily',
+                extra_params={
+                    'coin': 'SOL',
+                    'commission_pct': 0.1,
+                    'use_rsi_filter': True,
+                },
+            ),
+            ProfileConfig(
+                profile_id='crypto_ada',
+                display_name='ADA Momentum',
+                description='Buy ADA on golden cross + RSI filter (skip if overbought)',
+                asset_type=AssetType.CRYPTO,
+                data_source='coingecko',
+                initial_capital=10000.0,
+                position_size_pct=50,
+                max_positions=2,
+                stop_loss_pct=-25.0,
+                take_profit_pct=50.0,
+                max_holding_days=90,
+                commission=0.0,
+                schedule='daily',
+                extra_params={
+                    'coin': 'ADA',
+                    'commission_pct': 0.1,
+                    'use_rsi_filter': True,
+                },
+            ),
+            ProfileConfig(
+                profile_id='crypto_doge',
+                display_name='DOGE Momentum',
+                description='Buy DOGE on golden cross + RSI filter (skip if overbought)',
+                asset_type=AssetType.CRYPTO,
+                data_source='coingecko',
+                initial_capital=10000.0,
+                position_size_pct=50,
+                max_positions=2,
+                stop_loss_pct=-25.0,
+                take_profit_pct=60.0,
+                max_holding_days=90,
+                commission=0.0,
+                schedule='daily',
+                extra_params={
+                    'coin': 'DOGE',
+                    'commission_pct': 0.1,
+                    'use_rsi_filter': True,
                 },
             ),
         ]
@@ -79,14 +140,26 @@ class CryptoMomentumStrategy(BaseStrategy):
         if golden_cross is None or sma_200 is None:
             return []  # Not enough data
 
+        # RSI filter: skip if overbought
+        use_rsi = profile.extra_params.get('use_rsi_filter', False)
+        if use_rsi and golden_cross:
+            rsi_val = coin_data.get('rsi_14')
+            if rsi_val is not None and rsi_val > 70:
+                return []  # Overbought, skip even with golden cross
+
         # BUY: golden cross (SMA50 > SMA200) and not already holding
         if golden_cross and coin not in active_tickers:
+            rsi_info = ""
+            rsi_val = coin_data.get('rsi_14')
+            if rsi_val is not None:
+                rsi_info = f", RSI {rsi_val:.0f}"
+
             signals.append(Signal(
                 ticker=coin,
                 signal_type=SignalType.BUY,
                 asset_type=AssetType.CRYPTO,
-                confidence=min((sma_50 - sma_200) / sma_200 * 10, 1.0),  # Strength of cross
-                reason=f"Golden cross: SMA50 ${sma_50:,.0f} > SMA200 ${sma_200:,.0f}",
+                confidence=min((sma_50 - sma_200) / sma_200 * 10, 1.0),
+                reason=f"Golden cross: SMA50 ${sma_50:,.0f} > SMA200 ${sma_200:,.0f}{rsi_info}",
                 metadata={
                     'company_name': f'{coin}/USD',
                     'owner_name': 'MOMENTUM',
@@ -95,6 +168,10 @@ class CryptoMomentumStrategy(BaseStrategy):
                     'score': 0,
                     'value': price,
                     'cluster_size': 0,
+                    'explanation': (
+                        "Golden cross means the 50-day average price crossed above the 200-day average. "
+                        "This is a classic bullish signal indicating upward momentum."
+                    ),
                 },
             ))
 
@@ -102,9 +179,8 @@ class CryptoMomentumStrategy(BaseStrategy):
 
     def custom_exit_check(self, profile, position, current_price, days_held) -> Optional[str]:
         """Sell on death cross (SMA50 < SMA200)."""
-        # This would need access to market_data, which custom_exit_check doesn't have.
+        # Would need access to market_data, which custom_exit_check doesn't have.
         # For now, rely on standard stop-loss/take-profit/time exits.
-        # A future enhancement could pass market_data to custom_exit_check.
         return None
 
 

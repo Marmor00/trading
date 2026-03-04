@@ -31,6 +31,7 @@ from strategies import registry
 from data_sources.openinsider import scrape_openinsider, enrich_trades
 from data_sources.congress import fetch_congress_trades
 from data_sources.coingecko import fetch_crypto_data
+from data_sources.market_scanner import scan_market, clear_scan_cache
 
 
 DB_PATH = "data/forward_testing.db"
@@ -49,6 +50,8 @@ def fetch_data(source):
         return fetch_congress_trades(days_back=30)
     elif source == 'coingecko':
         return fetch_crypto_data()
+    elif source == 'market_scanner':
+        return scan_market()
     elif source == 'none':
         return None
     else:
@@ -197,6 +200,7 @@ def main():
     db.migrate_to_v3()
 
     clear_price_cache()
+    clear_scan_cache()
 
     # Load strategies
     profiles = registry.get_all_profiles(schedule_filter=schedule)
@@ -255,6 +259,17 @@ def main():
     # Send Telegram reports
     generate_daily_report(db, profiles)
     generate_positions_detail(db, profiles)
+
+    # Run auto-optimizer on Fridays (last run of the week)
+    if datetime.now().weekday() == 4:  # Friday
+        try:
+            from engine.auto_optimizer import AutoOptimizer
+            optimizer = AutoOptimizer(db)
+            actions = optimizer.run()
+            if actions:
+                optimizer.send_weekly_summary(actions)
+        except Exception as e:
+            print(f"Auto-optimizer error: {e}")
 
     print("\nDone.")
 

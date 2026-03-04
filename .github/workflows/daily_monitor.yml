@@ -2,7 +2,9 @@ name: Trading Simulation Laboratory
 
 on:
   schedule:
-    - cron: '0 18 * * 1-5'  # 6 PM UTC (1 PM Mexico) solo dias habiles
+    - cron: '30 14 * * 1-5'  # 2:30 PM UTC (9:30 AM ET - market open)
+    - cron: '0 17 * * 1-5'   # 5:00 PM UTC (12:00 PM ET - midday)
+    - cron: '30 20 * * 1-5'  # 8:30 PM UTC (3:30 PM ET - market close)
   workflow_dispatch:  # Permite ejecutar manualmente
 
 permissions:
@@ -45,7 +47,7 @@ jobs:
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         git add -f data/forward_testing.db
-        git diff --quiet && git diff --staged --quiet || git commit -m "DB update $(date +'%Y-%m-%d')"
+        git diff --quiet && git diff --staged --quiet || git commit -m "DB update $(date +'%Y-%m-%d %H:%M')"
 
     - name: Push changes
       uses: ad-m/github-push-action@v0.8.0

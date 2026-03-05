@@ -8,216 +8,29 @@
     <link rel="stylesheet" href="static/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <style>
-        /* Profile-specific enhancements */
-        .profile-hero {
-            position: relative;
-            padding: var(--space-xl) 0;
-            margin-bottom: var(--space-2xl);
-            text-align: center;
-        }
-        
-        .profile-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            height: 100%;
-            background: radial-gradient(ellipse, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        
-        .profile-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-sm);
-            padding: var(--space-sm) var(--space-md);
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-xl);
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: var(--space-md);
-        }
-        
-        .profile-badge .asset-type {
-            padding: var(--space-xs) var(--space-sm);
-            background: var(--accent-gradient);
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            color: white;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-        }
-        
-        .profile-title {
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-bottom: var(--space-sm);
-            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .profile-description {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        /* Big number display */
-        .big-stat {
-            text-align: center;
-            padding: var(--space-xl);
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .big-stat::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--accent-gradient);
-        }
-        
-        .big-stat.positive::before { background: var(--positive-gradient); }
-        .big-stat.negative::before { background: var(--negative-gradient); }
-        
-        .big-stat-value {
-            font-size: 3rem;
-            font-weight: 700;
-            font-family: var(--font-mono);
-            letter-spacing: -0.03em;
-            margin-bottom: var(--space-xs);
-        }
-        
-        .big-stat-label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-        
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--space-md);
-            margin-bottom: var(--space-2xl);
-        }
-        
-        /* Trade cards for mobile */
-        .trade-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: var(--space-md);
-            margin-bottom: var(--space-sm);
-            display: none;
-        }
-        
-        .trade-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-sm);
-        }
-        
-        .trade-card-ticker {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        
-        .trade-card-return {
-            font-family: var(--font-mono);
-            font-weight: 600;
-        }
-        
-        .trade-card-details {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--space-xs);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        
-        /* Status indicators */
-        .status-active {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-xs);
-            color: var(--positive);
-        }
-        
-        .status-active::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: var(--positive);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        /* Performance bar */
-        .perf-bar {
-            height: 4px;
-            background: var(--bg-secondary);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: var(--space-xs);
-        }
-        
-        .perf-bar-fill {
-            height: 100%;
-            border-radius: 2px;
-            transition: width 0.5s ease;
-        }
-        
-        .perf-bar-fill.positive { background: var(--positive-gradient); }
-        .perf-bar-fill.negative { background: var(--negative-gradient); }
-        
-        @media (max-width: 768px) {
-            .profile-title {
-                font-size: 1.75rem;
-            }
-            
-            .big-stat-value {
-                font-size: 2.25rem;
-            }
-            
-            .stats-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .trade-card {
-                display: block;
-            }
-            
-            .table-wrapper {
-                display: none;
-            }
-        }
-    </style>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2314b8a6' rx='12' width='100' height='100'/><path fill='white' d='M25 65 L40 45 L55 55 L75 30' stroke='white' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
 </head>
 <body>
     <header>
-        <a href="index.html" class="back-link">Back to Lab</a>
-        <div class="profile-badge">
-            <span class="asset-type">{{ profile.meta.asset_type }}</span>
-            <span>{{ profile.meta.data_source }}</span>
+        <div class="header-content" style="text-align: center;">
+            <a href="index.html" class="back-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Lab
+            </a>
+            <div class="profile-badge">
+                <span class="asset-type">{{ profile.meta.asset_type }}</span>
+                <span>{{ profile.meta.data_source }}</span>
+            </div>
+            <h1 class="profile-title">{{ profile.meta.display_name }}</h1>
+            <p class="profile-description">{{ profile.meta.description }}</p>
         </div>
-        <h1 class="profile-title">{{ profile.meta.display_name }}</h1>
-        <p class="profile-description">{{ profile.meta.description }}</p>
     </header>
 
     <main>
@@ -280,11 +93,46 @@
                 <div class="metric-label">Invested</div>
                 <div class="metric-value">{{ profile.portfolio.invested_value | fmt_money }}</div>
             </div>
+            
+            {% if profile.metrics.sharpe_ratio is not none %}
+            <div class="metric">
+                <div class="metric-label">Sharpe Ratio</div>
+                <div class="metric-value {{ 'positive' if profile.metrics.sharpe_ratio > 0 else 'negative' }}">
+                    {{ "%.2f" | format(profile.metrics.sharpe_ratio) }}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if profile.metrics.profit_factor is not none %}
+            <div class="metric">
+                <div class="metric-label">Profit Factor</div>
+                <div class="metric-value {{ 'positive' if profile.metrics.profit_factor > 1 else 'negative' }}">
+                    {{ "%.2f" | format(profile.metrics.profit_factor) }}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if profile.metrics.sortino_ratio is not none %}
+            <div class="metric">
+                <div class="metric-label">Sortino Ratio</div>
+                <div class="metric-value {{ 'positive' if profile.metrics.sortino_ratio > 0 else 'negative' }}">
+                    {{ "%.2f" | format(profile.metrics.sortino_ratio) }}
+                </div>
+            </div>
+            {% endif %}
         </section>
 
         <!-- Strategy Configuration -->
         <section class="config-section">
-            <h2>Strategy Configuration</h2>
+            <h2>
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </span>
+                Strategy Configuration
+            </h2>
             <div class="config-grid">
                 <span>Initial Capital: <strong>${{ "%.0f" | format(profile.meta.initial_capital) }}</strong></span>
                 <span>Position Size: <strong>{{ profile.meta.position_size_pct }}%</strong></span>
@@ -297,13 +145,27 @@
 
         <!-- Portfolio Value Chart -->
         <section class="chart-section">
-            <h2>Portfolio Performance</h2>
+            <h2>
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </span>
+                Portfolio Performance
+            </h2>
             {% if snapshots_json != '[]' %}
             <div class="chart-container large">
                 <canvas id="valueChart"></canvas>
             </div>
             {% else %}
             <div class="no-data">
+                <div class="no-data-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                </div>
                 <p>Waiting for daily snapshots...</p>
                 <p>Performance chart will appear after 2-3 days of trading data.</p>
             </div>
@@ -313,7 +175,14 @@
         <!-- Active Positions -->
         {% if profile.active_trades %}
         <section class="table-section">
-            <h2>🟢 Active Positions ({{ profile.active_trades | length }})</h2>
+            <h2>
+                <span class="icon" style="background: var(--success-bg); color: var(--success);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </span>
+                Active Positions ({{ profile.active_trades | length }})
+            </h2>
             
             <!-- Mobile Cards -->
             {% for t in profile.active_trades %}
@@ -338,38 +207,38 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Ticker</th>
-                            <th>Company</th>
+                            <th style="text-align: left;">Ticker</th>
+                            <th style="text-align: left;">Company</th>
                             <th>Entry Price</th>
                             <th>Current Price</th>
                             <th>Return</th>
                             <th>Days Held</th>
                             <th>Shares</th>
-                            <th>Insider/Source</th>
+                            <th style="text-align: left;">Insider/Source</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for t in profile.active_trades %}
                         <tr>
-                            <td>
-                                <strong style="font-size: 1rem;">{{ t.ticker }}</strong>
-                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            <td style="text-align: left;">
+                                <strong style="font-size: 14px;">{{ t.ticker }}</strong>
+                                <span class="status-active" style="margin-left: 8px;">LIVE</span>
                             </td>
-                            <td>{{ t.company[:30] }}{% if t.company | length > 30 %}...{% endif %}</td>
-                            <td style="font-family: var(--font-mono);">${{ "%.2f" | format(t.entry_price) }}</td>
-                            <td style="font-family: var(--font-mono);">${{ "%.2f" | format(t.current_price) }}</td>
+                            <td style="text-align: left;">{{ t.company[:30] }}{% if t.company | length > 30 %}...{% endif %}</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">${{ "%.2f" | format(t.entry_price) }}</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">${{ "%.2f" | format(t.current_price) }}</td>
                             <td>
-                                <span class="{{ 'positive' if t.return_pct > 0 else 'negative' }}" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
+                                <span class="{{ 'positive' if t.return_pct > 0 else 'negative' }}" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
                                     {{ "%+.1f" | format(t.return_pct) }}%
                                 </span>
-                                <div class="perf-bar" style="width: 80px;">
+                                <div class="perf-bar" style="width: 80px; margin-top: 4px;">
                                     <div class="perf-bar-fill {{ 'positive' if t.return_pct > 0 else 'negative' }}" 
                                          style="width: {{ [100, (t.return_pct | abs) * 5] | min }}%;"></div>
                                 </div>
                             </td>
-                            <td>{{ t.days }}d</td>
+                            <td style="font-family: var(--font-mono);">{{ t.days }}d</td>
                             <td style="font-family: var(--font-mono);">{{ t.shares | fmt_shares }}</td>
-                            <td style="color: var(--text-muted); font-size: 0.85rem;">{{ t.insider[:25] if t.insider else '—' }}</td>
+                            <td style="color: var(--text-muted); font-size: 12px; text-align: left;">{{ t.insider[:25] if t.insider else '&mdash;' }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -381,7 +250,18 @@
         <!-- Closed Trades -->
         {% if profile.closed_trades %}
         <section class="table-section">
-            <h2>📊 Trade History ({{ profile.closed_trades | length }})</h2>
+            <h2>
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                </span>
+                Trade History ({{ profile.closed_trades | length }})
+            </h2>
             
             <!-- Mobile Cards -->
             {% for t in profile.closed_trades %}
@@ -406,28 +286,28 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Ticker</th>
+                            <th style="text-align: left;">Ticker</th>
                             <th>Entry Price</th>
                             <th>Exit Price</th>
                             <th>Return</th>
                             <th>Days Held</th>
-                            <th>Exit Reason</th>
+                            <th style="text-align: left;">Exit Reason</th>
                             <th>Exit Date</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for t in profile.closed_trades %}
                         <tr>
-                            <td><strong>{{ t.ticker }}</strong></td>
-                            <td style="font-family: var(--font-mono);">${{ "%.2f" | format(t.entry_price) }}</td>
-                            <td style="font-family: var(--font-mono);">${{ "%.2f" | format(t.exit_price) }}</td>
+                            <td style="text-align: left;"><strong>{{ t.ticker }}</strong></td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">${{ "%.2f" | format(t.entry_price) }}</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">${{ "%.2f" | format(t.exit_price) }}</td>
                             <td>
-                                <span class="{{ 'positive' if t.return_pct > 0 else 'negative' }}" style="font-family: var(--font-mono); font-weight: 600;">
+                                <span class="{{ 'positive' if t.return_pct > 0 else 'negative' }}" style="font-family: var(--font-mono); font-weight: 700;">
                                     {{ "%+.1f" | format(t.return_pct) }}%
                                 </span>
                             </td>
-                            <td>{{ t.days }}d</td>
-                            <td>
+                            <td style="font-family: var(--font-mono);">{{ t.days }}d</td>
+                            <td style="text-align: left;">
                                 <span class="badge badge-{{ t.exit_reason | lower }}">{{ t.exit_reason }}</span>
                             </td>
                             <td style="font-family: var(--font-mono); color: var(--text-muted);">{{ t.exit_date }}</td>
@@ -443,6 +323,12 @@
         {% if not profile.active_trades and not profile.closed_trades %}
         <section class="table-section">
             <div class="no-data">
+                <div class="no-data-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
                 <p>No trades yet</p>
                 <p>This strategy is waiting for its first signal.</p>
             </div>
@@ -451,13 +337,21 @@
     </main>
 
     <footer>
-        <p>📌 Paper trading simulation only. No real money at risk.<br>
-        Last updated: {{ updated_at }}</p>
+        <p>
+            <span class="footer-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+            </span>
+            Paper trading simulation only. No real money at risk.<br>
+            Last updated: {{ updated_at }}
+        </p>
     </footer>
 
     <script>
     // Chart.js configuration
-    Chart.defaults.color = '#8b97a8';
+    Chart.defaults.color = '#71717a';
     Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
     
     const snapshots = {{ snapshots_json | safe }};
@@ -471,11 +365,11 @@
         // Determine if overall positive or negative
         const lastValue = totalData[totalData.length - 1];
         const isPositive = lastValue >= initialValue;
-        const mainColor = isPositive ? '#10b981' : '#ef4444';
+        const mainColor = isPositive ? '#22c55e' : '#ef4444';
         
         // Create gradient
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, isPositive ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)');
+        gradient.addColorStop(0, isPositive ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)');
         gradient.addColorStop(1, 'transparent');
         
         new Chart(ctx, {
@@ -487,22 +381,22 @@
                         label: 'Total Value',
                         data: totalData,
                         borderColor: mainColor,
-                        borderWidth: 3,
+                        borderWidth: 2.5,
                         backgroundColor: gradient,
                         fill: true,
                         tension: 0.4,
                         pointRadius: 0,
-                        pointHoverRadius: 6,
+                        pointHoverRadius: 5,
                         pointHoverBackgroundColor: mainColor,
-                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderColor: '#0a0a0b',
                         pointHoverBorderWidth: 2,
                     },
                     {
                         label: 'Cash',
                         data: snapshots.map(s => s.cash),
-                        borderColor: '#6366f1',
+                        borderColor: '#8b5cf6',
                         borderDash: [5, 5],
-                        borderWidth: 2,
+                        borderWidth: 1.5,
                         fill: false,
                         tension: 0.4,
                         pointRadius: 0,
@@ -510,7 +404,7 @@
                     {
                         label: 'Initial Capital',
                         data: snapshots.map(() => initialValue),
-                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        borderColor: 'rgba(250, 250, 250, 0.15)',
                         borderDash: [10, 5],
                         borderWidth: 1,
                         fill: false,
@@ -530,19 +424,25 @@
                         position: 'top',
                         align: 'end',
                         labels: { 
-                            color: '#8b97a8',
+                            color: '#a1a1aa',
                             usePointStyle: true,
                             pointStyle: 'circle',
-                            padding: 20,
+                            padding: 16,
+                            boxWidth: 6,
+                            boxHeight: 6,
+                            font: { size: 11, weight: 500 }
                         } 
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(10, 14, 20, 0.95)',
-                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        backgroundColor: 'rgba(17, 17, 19, 0.95)',
+                        borderColor: '#2e2e32',
                         borderWidth: 1,
-                        padding: 16,
-                        titleFont: { size: 14, weight: 600 },
-                        bodyFont: { size: 13 },
+                        padding: 14,
+                        titleFont: { size: 12, weight: 600 },
+                        bodyFont: { size: 12, family: "'JetBrains Mono', monospace" },
+                        titleColor: '#fafafa',
+                        bodyColor: '#a1a1aa',
+                        cornerRadius: 8,
                         callbacks: {
                             label: function(ctx) {
                                 if (ctx.dataset.label === 'Initial Capital') return null;
@@ -562,7 +462,7 @@
                 scales: {
                     x: { 
                         ticks: { 
-                            color: '#5c6773',
+                            color: '#71717a',
                             maxTicksLimit: 10,
                             font: { size: 11 }
                         }, 
@@ -573,8 +473,8 @@
                     },
                     y: {
                         ticks: {
-                            color: '#5c6773',
-                            font: { size: 11 },
+                            color: '#71717a',
+                            font: { size: 11, family: "'JetBrains Mono', monospace" },
                             callback: function(v) { 
                                 return '$' + v.toLocaleString('en-US', {maximumFractionDigits: 0}); 
                             }

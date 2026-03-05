@@ -8,18 +8,27 @@
     <link rel="stylesheet" href="static/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2314b8a6' rx='12' width='100' height='100'/><path fill='white' d='M25 65 L40 45 L55 55 L75 30' stroke='white' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
 </head>
 <body>
     <header>
-        <div class="logo">
-            <div class="logo-icon">📊</div>
-            <h1>Trading Simulation Lab</h1>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </div>
+                <h1>Trading Simulation Lab</h1>
+            </div>
+            <p class="subtitle">
+                <span>{{ profile_count }} strategies</span> competing &bull; Paper trading &bull; Updated: {{ updated_at }}
+            </p>
         </div>
-        <p class="subtitle">
-            <span>{{ profile_count }} strategies</span> competing • Paper trading • Updated: {{ updated_at }}
-        </p>
     </header>
 
     <main>
@@ -33,28 +42,52 @@
             {% set positive_count = leaderboard | selectattr('return_pct', 'gt', 0) | list | length %}
             
             <div class="hero-stat">
-                <div class="hero-stat-icon">💰</div>
+                <div class="hero-stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                </div>
                 <div class="hero-stat-label">Total Portfolio Value</div>
                 <div class="hero-stat-value">{{ total_value | fmt_money }}</div>
                 <div class="hero-stat-detail">Across {{ profile_count }} strategies</div>
             </div>
             
             <div class="hero-stat positive">
-                <div class="hero-stat-icon">🏆</div>
+                <div class="hero-stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                        <path d="M4 22h16"></path>
+                        <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                        <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                        <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                    </svg>
+                </div>
                 <div class="hero-stat-label">Best Performer</div>
                 <div class="hero-stat-value">{% if best %}{{ best.return_pct | fmt_pct }}{% else %}N/A{% endif %}</div>
                 <div class="hero-stat-detail">{% if best %}{{ best.display_name }}{% endif %}</div>
             </div>
             
             <div class="hero-stat negative">
-                <div class="hero-stat-icon">📉</div>
+                <div class="hero-stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
+                        <polyline points="17 18 23 18 23 12"></polyline>
+                    </svg>
+                </div>
                 <div class="hero-stat-label">Worst Performer</div>
                 <div class="hero-stat-value">{% if worst %}{{ worst.return_pct | fmt_pct }}{% else %}N/A{% endif %}</div>
                 <div class="hero-stat-detail">{% if worst %}{{ worst.display_name }}{% endif %}</div>
             </div>
             
             <div class="hero-stat">
-                <div class="hero-stat-icon">📈</div>
+                <div class="hero-stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                        <polyline points="16 7 22 7 22 13"></polyline>
+                    </svg>
+                </div>
                 <div class="hero-stat-label">Active Positions</div>
                 <div class="hero-stat-value">{{ total_active }}</div>
                 <div class="hero-stat-detail">{{ positive_count }}/{{ profile_count }} profitable</div>
@@ -63,12 +96,48 @@
 
         <!-- Filter Bar -->
         <section class="filter-bar">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="stock">Stocks</button>
-            <button class="filter-btn" data-filter="crypto">Crypto</button>
-            <button class="filter-btn" data-filter="etf">ETFs</button>
-            <button class="filter-btn" data-filter="profitable">Profitable Only</button>
-            <input type="text" class="filter-search" placeholder="🔍 Search strategies..." id="searchInput">
+            <button class="filter-btn active" data-filter="all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                All
+            </button>
+            <button class="filter-btn" data-filter="stock">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                Stocks
+            </button>
+            <button class="filter-btn" data-filter="crypto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                Crypto
+            </button>
+            <button class="filter-btn" data-filter="etf">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                </svg>
+                ETFs
+            </button>
+            <button class="filter-btn" data-filter="profitable">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Profitable Only
+            </button>
+            <div class="search-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" class="filter-search" placeholder="Search strategies..." id="searchInput">
+            </div>
         </section>
 
         <!-- Strategy Cards Grid -->
@@ -98,17 +167,32 @@
                 
                 <div class="card-details">
                     <div class="card-detail-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
                         <span>Active:</span> {{ p.active }}
                     </div>
                     <div class="card-detail-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
                         <span>Closed:</span> {{ p.wins + p.losses }}
                     </div>
                     {% if p.wins + p.losses > 0 %}
                     <div class="card-detail-item">
-                        <span>Win Rate:</span> {{ "%.0f" | format(p.win_rate) }}%
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <span>WR:</span> {{ "%.0f" | format(p.win_rate) }}%
                     </div>
                     {% endif %}
                     <div class="card-detail-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
                         <span>Days:</span> {{ p.days_active }}d
                     </div>
                 </div>
@@ -118,13 +202,29 @@
 
         <!-- Return Curves Chart -->
         <section class="chart-section">
-            <h2>Return Curves</h2>
+            <h2>
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                </span>
+                Return Curves
+            </h2>
             {% if return_curves_json != '{"labels": [], "datasets": []}' %}
             <div class="chart-container large">
                 <canvas id="returnChart"></canvas>
             </div>
             {% else %}
             <div class="no-data">
+                <div class="no-data-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                </div>
                 <p>Waiting for daily snapshots...</p>
                 <p>Charts will appear after 2-3 days of data.</p>
             </div>
@@ -133,7 +233,18 @@
 
         <!-- Leaderboard Table -->
         <section class="table-section">
-            <h2>📋 Full Leaderboard</h2>
+            <h2>
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                </span>
+                Full Leaderboard
+            </h2>
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -157,14 +268,14 @@
                             <td><strong>{{ p.rank }}</strong></td>
                             <td><a href="profile_{{ p.profile_id }}.html">{{ p.display_name }}</a></td>
                             <td><span class="badge badge-{{ p.asset_type | lower }}">{{ p.asset_type }}</span></td>
-                            <td style="font-family: var(--font-mono);">{{ p.total | fmt_money }}</td>
-                            <td class="{{ 'positive' if p.return_pct > 0 else 'negative' }}" style="font-family: var(--font-mono); font-weight: 600;">{{ p.return_pct | fmt_pct }}</td>
-                            <td>{{ p.active }}</td>
-                            <td>{{ p.wins }}W / {{ p.losses }}L</td>
-                            <td>{% if p.wins + p.losses > 0 %}{{ "%.0f" | format(p.win_rate) }}%{% else %}—{% endif %}</td>
-                            <td>{{ p.days_active }}d</td>
-                            <td>{{ p.last_signal }}</td>
-                            <td style="color: var(--text-muted);">{{ p.data_source }}</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">{{ p.total | fmt_money }}</td>
+                            <td class="{{ 'positive' if p.return_pct > 0 else 'negative' }}" style="font-family: var(--font-mono); font-weight: 700;">{{ p.return_pct | fmt_pct }}</td>
+                            <td style="font-family: var(--font-mono);">{{ p.active }}</td>
+                            <td style="font-family: var(--font-mono);">{{ p.wins }}W / {{ p.losses }}L</td>
+                            <td style="font-family: var(--font-mono);">{% if p.wins + p.losses > 0 %}{{ "%.0f" | format(p.win_rate) }}%{% else %}&mdash;{% endif %}</td>
+                            <td style="font-family: var(--font-mono);">{{ p.days_active }}d</td>
+                            <td style="font-family: var(--font-mono); font-size: 12px;">{{ p.last_signal }}</td>
+                            <td style="color: var(--text-muted); font-size: 12px;">{{ p.data_source }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -175,7 +286,15 @@
         <!-- Optimizer Log -->
         {% if optimizer_log %}
         <section class="table-section">
-            <h2>🤖 Optimizer Activity</h2>
+            <h2>
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                    </svg>
+                </span>
+                Optimizer Activity
+            </h2>
             <p class="section-note">The auto-optimizer adjusts strategies every Friday based on performance.</p>
             <div class="table-wrapper">
                 <table>
@@ -205,7 +324,16 @@
         <!-- Retired Profiles -->
         {% if retired_profiles %}
         <section class="table-section">
-            <h2>🪦 Strategy Graveyard</h2>
+            <h2>
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                </span>
+                Strategy Graveyard
+            </h2>
             <p class="section-note">These strategies were auto-spawned by the optimizer and later retired due to underperformance.</p>
             <div class="table-wrapper">
                 <table>
@@ -222,9 +350,9 @@
                         {% for r in retired_profiles %}
                         <tr class="retired-row">
                             <td>{{ r.display_name }}</td>
-                            <td>{{ r.spawned_from or '—' }}</td>
-                            <td class="{{ 'positive' if r.return_pct > 0 else 'negative' }}" style="font-family: var(--font-mono);">{{ r.return_pct | fmt_pct }}</td>
-                            <td>{{ r.wins }}W / {{ r.losses }}L</td>
+                            <td>{{ r.spawned_from or '&mdash;' }}</td>
+                            <td class="{{ 'positive' if r.return_pct > 0 else 'negative' }}" style="font-family: var(--font-mono); font-weight: 600;">{{ r.return_pct | fmt_pct }}</td>
+                            <td style="font-family: var(--font-mono);">{{ r.wins }}W / {{ r.losses }}L</td>
                             <td style="font-family: var(--font-mono);">{{ r.retired_date }}</td>
                         </tr>
                         {% endfor %}
@@ -236,13 +364,21 @@
     </main>
 
     <footer>
-        <p>📌 Paper trading simulation only. No real money at risk.<br>
-        Auto-optimizer runs every Friday to adjust strategy mix based on performance.</p>
+        <p>
+            <span class="footer-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+            </span>
+            Paper trading simulation only. No real money at risk.<br>
+            Auto-optimizer runs every Friday to adjust strategy mix based on performance.
+        </p>
     </footer>
 
     <script>
     // Chart.js default configuration
-    Chart.defaults.color = '#8b97a8';
+    Chart.defaults.color = '#71717a';
     Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
     
     // Return Curves Chart
@@ -250,15 +386,26 @@
     if (chartData.labels.length > 0) {
         const ctx = document.getElementById('returnChart').getContext('2d');
         
-        // Enhanced gradient for each dataset
+        // Chart colors
+        const chartColors = [
+            '#14b8a6', '#8b5cf6', '#f59e0b', '#ec4899', '#3b82f6',
+            '#22c55e', '#f97316', '#06b6d4', '#a855f7', '#10b981',
+            '#ef4444', '#84cc16', '#0ea5e9', '#d946ef', '#eab308',
+            '#6366f1', '#14b8a6', '#f43f5e', '#0891b2', '#7c3aed'
+        ];
+        
+        // Apply colors to datasets
         chartData.datasets.forEach((dataset, index) => {
-            const color = dataset.borderColor;
-            // Create subtle fill gradient
-            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, color.replace(')', ', 0.1)').replace('rgb', 'rgba'));
-            gradient.addColorStop(1, 'transparent');
-            dataset.backgroundColor = gradient;
-            dataset.fill = index === 0; // Only fill the top performer
+            const color = chartColors[index % chartColors.length];
+            dataset.borderColor = color;
+            dataset.backgroundColor = 'transparent';
+            dataset.borderWidth = 2;
+            dataset.tension = 0.3;
+            dataset.pointRadius = 0;
+            dataset.pointHoverRadius = 4;
+            dataset.pointHoverBackgroundColor = color;
+            dataset.pointHoverBorderColor = '#0a0a0b';
+            dataset.pointHoverBorderWidth = 2;
         });
         
         new Chart(ctx, {
@@ -276,20 +423,25 @@
                         position: 'top',
                         align: 'start',
                         labels: { 
-                            color: '#8b97a8', 
-                            font: { size: 11 },
-                            padding: 20,
+                            color: '#a1a1aa', 
+                            font: { size: 11, weight: 500 },
+                            padding: 16,
                             usePointStyle: true,
-                            pointStyle: 'circle'
+                            pointStyle: 'circle',
+                            boxWidth: 6,
+                            boxHeight: 6
                         }
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(10, 14, 20, 0.95)',
-                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        backgroundColor: 'rgba(17, 17, 19, 0.95)',
+                        borderColor: '#2e2e32',
                         borderWidth: 1,
                         padding: 12,
-                        titleFont: { size: 13, weight: 600 },
-                        bodyFont: { size: 12 },
+                        titleFont: { size: 12, weight: 600 },
+                        bodyFont: { size: 11, family: "'JetBrains Mono', monospace" },
+                        titleColor: '#fafafa',
+                        bodyColor: '#a1a1aa',
+                        cornerRadius: 8,
                         callbacks: {
                             label: function(ctx) {
                                 const value = ctx.parsed.y;
@@ -302,7 +454,7 @@
                 scales: {
                     x: {
                         ticks: { 
-                            color: '#5c6773', 
+                            color: '#71717a', 
                             maxTicksLimit: 12,
                             font: { size: 11 }
                         },
@@ -313,8 +465,8 @@
                     },
                     y: {
                         ticks: {
-                            color: '#5c6773',
-                            font: { size: 11 },
+                            color: '#71717a',
+                            font: { size: 11, family: "'JetBrains Mono', monospace" },
                             callback: function(v) { 
                                 return (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; 
                             }
@@ -334,10 +486,8 @@
     if (sparklineData.labels.length > 0) {
         sparklineData.datasets.forEach(dataset => {
             const profileId = dataset.label.toLowerCase().replace(/[^a-z0-9]/g, '_');
-            const canvas = document.querySelector(`[id^="spark-"][id*="${profileId}"]`) || 
-                           document.getElementById('spark-' + profileId);
             
-            // Try to match by display name pattern
+            // Match by display name
             const cards = document.querySelectorAll('.card');
             cards.forEach(card => {
                 const cardName = card.querySelector('.card-name')?.textContent;
@@ -347,7 +497,12 @@
                         const ctx = sparkCanvas.getContext('2d');
                         const data = dataset.data.filter(d => d !== null);
                         const lastValue = data[data.length - 1];
-                        const color = lastValue >= 0 ? '#10b981' : '#ef4444';
+                        const color = lastValue >= 0 ? '#22c55e' : '#ef4444';
+                        
+                        // Create gradient
+                        const gradient = ctx.createLinearGradient(0, 0, 0, 40);
+                        gradient.addColorStop(0, lastValue >= 0 ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)');
+                        gradient.addColorStop(1, 'transparent');
                         
                         new Chart(ctx, {
                             type: 'line',
@@ -358,12 +513,7 @@
                                     borderColor: color,
                                     borderWidth: 2,
                                     fill: true,
-                                    backgroundColor: (context) => {
-                                        const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, 40);
-                                        gradient.addColorStop(0, color.replace(')', ', 0.3)').replace('#', 'rgba(').replace(/([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i, (_, r, g, b) => `${parseInt(r, 16)}, ${parseInt(g, 16)}, ${parseInt(b, 16)}`));
-                                        gradient.addColorStop(1, 'transparent');
-                                        return gradient;
-                                    },
+                                    backgroundColor: gradient,
                                     tension: 0.4,
                                     pointRadius: 0
                                 }]

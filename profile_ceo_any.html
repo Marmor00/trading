@@ -8,228 +8,41 @@
     <link rel="stylesheet" href="static/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <style>
-        /* Profile-specific enhancements */
-        .profile-hero {
-            position: relative;
-            padding: var(--space-xl) 0;
-            margin-bottom: var(--space-2xl);
-            text-align: center;
-        }
-        
-        .profile-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            height: 100%;
-            background: radial-gradient(ellipse, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        
-        .profile-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-sm);
-            padding: var(--space-sm) var(--space-md);
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-xl);
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: var(--space-md);
-        }
-        
-        .profile-badge .asset-type {
-            padding: var(--space-xs) var(--space-sm);
-            background: var(--accent-gradient);
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            color: white;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-        }
-        
-        .profile-title {
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-bottom: var(--space-sm);
-            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .profile-description {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        /* Big number display */
-        .big-stat {
-            text-align: center;
-            padding: var(--space-xl);
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .big-stat::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--accent-gradient);
-        }
-        
-        .big-stat.positive::before { background: var(--positive-gradient); }
-        .big-stat.negative::before { background: var(--negative-gradient); }
-        
-        .big-stat-value {
-            font-size: 3rem;
-            font-weight: 700;
-            font-family: var(--font-mono);
-            letter-spacing: -0.03em;
-            margin-bottom: var(--space-xs);
-        }
-        
-        .big-stat-label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-        
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--space-md);
-            margin-bottom: var(--space-2xl);
-        }
-        
-        /* Trade cards for mobile */
-        .trade-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: var(--space-md);
-            margin-bottom: var(--space-sm);
-            display: none;
-        }
-        
-        .trade-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-sm);
-        }
-        
-        .trade-card-ticker {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        
-        .trade-card-return {
-            font-family: var(--font-mono);
-            font-weight: 600;
-        }
-        
-        .trade-card-details {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--space-xs);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        
-        /* Status indicators */
-        .status-active {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-xs);
-            color: var(--positive);
-        }
-        
-        .status-active::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: var(--positive);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        /* Performance bar */
-        .perf-bar {
-            height: 4px;
-            background: var(--bg-secondary);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: var(--space-xs);
-        }
-        
-        .perf-bar-fill {
-            height: 100%;
-            border-radius: 2px;
-            transition: width 0.5s ease;
-        }
-        
-        .perf-bar-fill.positive { background: var(--positive-gradient); }
-        .perf-bar-fill.negative { background: var(--negative-gradient); }
-        
-        @media (max-width: 768px) {
-            .profile-title {
-                font-size: 1.75rem;
-            }
-            
-            .big-stat-value {
-                font-size: 2.25rem;
-            }
-            
-            .stats-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .trade-card {
-                display: block;
-            }
-            
-            .table-wrapper {
-                display: none;
-            }
-        }
-    </style>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2314b8a6' rx='12' width='100' height='100'/><path fill='white' d='M25 65 L40 45 L55 55 L75 30' stroke='white' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
 </head>
 <body>
     <header>
-        <a href="index.html" class="back-link">Back to Lab</a>
-        <div class="profile-badge">
-            <span class="asset-type">stock</span>
-            <span>openinsider</span>
+        <div class="header-content" style="text-align: center;">
+            <a href="index.html" class="back-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Lab
+            </a>
+            <div class="profile-badge">
+                <span class="asset-type">stock</span>
+                <span>openinsider</span>
+            </div>
+            <h1 class="profile-title">CEO/CFO</h1>
+            <p class="profile-description">Buy when CEO or CFO purchases >$50k of their company stock</p>
         </div>
-        <h1 class="profile-title">CEO/CFO</h1>
-        <p class="profile-description">Buy when CEO or CFO purchases >$50k of their company stock</p>
     </header>
 
     <main>
         <!-- Primary Stats -->
         <div class="stats-row">
             <div class="big-stat">
-                <div class="big-stat-value">$9,736</div>
+                <div class="big-stat-value">$9,720</div>
                 <div class="big-stat-label">Total Portfolio Value</div>
             </div>
             <div class="big-stat negative">
                 <div class="big-stat-value negative">
-                    -2.6%
+                    -2.8%
                 </div>
                 <div class="big-stat-label">Total Return</div>
             </div>
@@ -278,13 +91,48 @@
             
             <div class="metric">
                 <div class="metric-label">Invested</div>
-                <div class="metric-value">$5,717</div>
+                <div class="metric-value">$5,702</div>
             </div>
+            
+            
+            <div class="metric">
+                <div class="metric-label">Sharpe Ratio</div>
+                <div class="metric-value negative">
+                    -0.09
+                </div>
+            </div>
+            
+            
+            
+            <div class="metric">
+                <div class="metric-label">Profit Factor</div>
+                <div class="metric-value negative">
+                    0.00
+                </div>
+            </div>
+            
+            
+            
+            <div class="metric">
+                <div class="metric-label">Sortino Ratio</div>
+                <div class="metric-value negative">
+                    -0.16
+                </div>
+            </div>
+            
         </section>
 
         <!-- Strategy Configuration -->
         <section class="config-section">
-            <h2>Strategy Configuration</h2>
+            <h2>
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </span>
+                Strategy Configuration
+            </h2>
             <div class="config-grid">
                 <span>Initial Capital: <strong>$10000</strong></span>
                 <span>Position Size: <strong>10.0%</strong></span>
@@ -297,7 +145,14 @@
 
         <!-- Portfolio Value Chart -->
         <section class="chart-section">
-            <h2>Portfolio Performance</h2>
+            <h2>
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </span>
+                Portfolio Performance
+            </h2>
             
             <div class="chart-container large">
                 <canvas id="valueChart"></canvas>
@@ -308,7 +163,14 @@
         <!-- Active Positions -->
         
         <section class="table-section">
-            <h2>🟢 Active Positions (10)</h2>
+            <h2>
+                <span class="icon" style="background: var(--success-bg); color: var(--success);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </span>
+                Active Positions (10)
+            </h2>
             
             <!-- Mobile Cards -->
             
@@ -316,13 +178,13 @@
                 <div class="trade-card-header">
                     <span class="trade-card-ticker">ASST</span>
                     <span class="trade-card-return positive">
-                        11.6%
+                        11.2%
                     </span>
                 </div>
                 <div class="trade-card-details">
                     <span>Entry: $8.02</span>
-                    <span>Current: $8.95</span>
-                    <span>Days: 10</span>
+                    <span>Current: $8.91</span>
+                    <span>Days: 11</span>
                     <span>Shares: 48</span>
                 </div>
             </div>
@@ -337,7 +199,7 @@
                 <div class="trade-card-details">
                     <span>Entry: $0.58</span>
                     <span>Current: $0.62</span>
-                    <span>Days: 12</span>
+                    <span>Days: 13</span>
                     <span>Shares: 1032</span>
                 </div>
             </div>
@@ -346,13 +208,13 @@
                 <div class="trade-card-header">
                     <span class="trade-card-ticker">CNVS</span>
                     <span class="trade-card-return positive">
-                        4.4%
+                        4.9%
                     </span>
                 </div>
                 <div class="trade-card-details">
                     <span>Entry: $2.97</span>
-                    <span>Current: $3.10</span>
-                    <span>Days: 12</span>
+                    <span>Current: $3.12</span>
+                    <span>Days: 13</span>
                     <span>Shares: 180</span>
                 </div>
             </div>
@@ -361,13 +223,13 @@
                 <div class="trade-card-header">
                     <span class="trade-card-ticker">CNVS</span>
                     <span class="trade-card-return positive">
-                        4.4%
+                        4.9%
                     </span>
                 </div>
                 <div class="trade-card-details">
                     <span>Entry: $2.97</span>
-                    <span>Current: $3.10</span>
-                    <span>Days: 12</span>
+                    <span>Current: $3.12</span>
+                    <span>Days: 13</span>
                     <span>Shares: 162</span>
                 </div>
             </div>
@@ -376,13 +238,13 @@
                 <div class="trade-card-header">
                     <span class="trade-card-ticker">DEI</span>
                     <span class="trade-card-return positive">
-                        3.2%
+                        2.9%
                     </span>
                 </div>
                 <div class="trade-card-details">
                     <span>Entry: $9.83</span>
-                    <span>Current: $10.14</span>
-                    <span>Days: 12</span>
+                    <span>Current: $10.12</span>
+                    <span>Days: 13</span>
                     <span>Shares: 74</span>
                 </div>
             </div>
@@ -391,13 +253,13 @@
                 <div class="trade-card-header">
                     <span class="trade-card-ticker">FCPT</span>
                     <span class="trade-card-return positive">
-                        3.1%
+                        2.8%
                     </span>
                 </div>
                 <div class="trade-card-details">
                     <span>Entry: $24.72</span>
-                    <span>Current: $25.48</span>
-                    <span>Days: 12</span>
+                    <span>Current: $25.42</span>
+                    <span>Days: 13</span>
                     <span>Shares: 32</span>
                 </div>
             </div>
@@ -406,29 +268,14 @@
                 <div class="trade-card-header">
                     <span class="trade-card-ticker">LYFT</span>
                     <span class="trade-card-return negative">
-                        -2.8%
+                        -3.1%
                     </span>
                 </div>
                 <div class="trade-card-details">
                     <span>Entry: $13.71</span>
-                    <span>Current: $13.33</span>
-                    <span>Days: 12</span>
+                    <span>Current: $13.28</span>
+                    <span>Days: 13</span>
                     <span>Shares: 48</span>
-                </div>
-            </div>
-            
-            <div class="trade-card">
-                <div class="trade-card-header">
-                    <span class="trade-card-ticker">CNDT</span>
-                    <span class="trade-card-return negative">
-                        -4.0%
-                    </span>
-                </div>
-                <div class="trade-card-details">
-                    <span>Entry: $1.54</span>
-                    <span>Current: $1.48</span>
-                    <span>Days: 7</span>
-                    <span>Shares: 352</span>
                 </div>
             </div>
             
@@ -436,14 +283,29 @@
                 <div class="trade-card-header">
                     <span class="trade-card-ticker">CEVA</span>
                     <span class="trade-card-return negative">
-                        -4.2%
+                        -4.6%
                     </span>
                 </div>
                 <div class="trade-card-details">
                     <span>Entry: $20.31</span>
-                    <span>Current: $19.45</span>
-                    <span>Days: 7</span>
+                    <span>Current: $19.38</span>
+                    <span>Days: 8</span>
                     <span>Shares: 21</span>
+                </div>
+            </div>
+            
+            <div class="trade-card">
+                <div class="trade-card-header">
+                    <span class="trade-card-ticker">CNDT</span>
+                    <span class="trade-card-return negative">
+                        -5.6%
+                    </span>
+                </div>
+                <div class="trade-card-details">
+                    <span>Entry: $1.54</span>
+                    <span>Current: $1.46</span>
+                    <span>Days: 8</span>
+                    <span>Shares: 352</span>
                 </div>
             </div>
             
@@ -451,13 +313,13 @@
                 <div class="trade-card-header">
                     <span class="trade-card-ticker">TLSI</span>
                     <span class="trade-card-return negative">
-                        -7.3%
+                        -7.7%
                     </span>
                 </div>
                 <div class="trade-card-details">
                     <span>Entry: $5.28</span>
-                    <span>Current: $4.89</span>
-                    <span>Days: 7</span>
+                    <span>Current: $4.87</span>
+                    <span>Days: 8</span>
                     <span>Shares: 92</span>
                 </div>
             </div>
@@ -468,236 +330,236 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Ticker</th>
-                            <th>Company</th>
+                            <th style="text-align: left;">Ticker</th>
+                            <th style="text-align: left;">Company</th>
                             <th>Entry Price</th>
                             <th>Current Price</th>
                             <th>Return</th>
                             <th>Days Held</th>
                             <th>Shares</th>
-                            <th>Insider/Source</th>
+                            <th style="text-align: left;">Insider/Source</th>
                         </tr>
                     </thead>
                     <tbody>
                         
                         <tr>
-                            <td>
-                                <strong style="font-size: 1rem;">ASST</strong>
-                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            <td style="text-align: left;">
+                                <strong style="font-size: 14px;">ASST</strong>
+                                <span class="status-active" style="margin-left: 8px;">LIVE</span>
                             </td>
-                            <td>Strive, Inc.</td>
-                            <td style="font-family: var(--font-mono);">$8.02</td>
-                            <td style="font-family: var(--font-mono);">$8.95</td>
+                            <td style="text-align: left;">Strive, Inc.</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$8.02</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$8.91</td>
                             <td>
-                                <span class="positive" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
-                                    +11.6%
+                                <span class="positive" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
+                                    +11.2%
                                 </span>
-                                <div class="perf-bar" style="width: 80px;">
+                                <div class="perf-bar" style="width: 80px; margin-top: 4px;">
                                     <div class="perf-bar-fill positive" 
-                                         style="width: 57.98004987531171%;"></div>
+                                         style="width: 55.79800498753115%;"></div>
                                 </div>
                             </td>
-                            <td>10d</td>
+                            <td style="font-family: var(--font-mono);">11d</td>
                             <td style="font-family: var(--font-mono);">48</td>
-                            <td style="color: var(--text-muted); font-size: 0.85rem;">Pham Benjamin</td>
+                            <td style="color: var(--text-muted); font-size: 12px; text-align: left;">Pham Benjamin</td>
                         </tr>
                         
                         <tr>
-                            <td>
-                                <strong style="font-size: 1rem;">CHGG</strong>
-                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            <td style="text-align: left;">
+                                <strong style="font-size: 14px;">CHGG</strong>
+                                <span class="status-active" style="margin-left: 8px;">LIVE</span>
                             </td>
-                            <td>Chegg, Inc</td>
-                            <td style="font-family: var(--font-mono);">$0.58</td>
-                            <td style="font-family: var(--font-mono);">$0.62</td>
+                            <td style="text-align: left;">Chegg, Inc</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$0.58</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$0.62</td>
                             <td>
-                                <span class="positive" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
+                                <span class="positive" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
                                     +7.8%
                                 </span>
-                                <div class="perf-bar" style="width: 80px;">
+                                <div class="perf-bar" style="width: 80px; margin-top: 4px;">
                                     <div class="perf-bar-fill positive" 
                                          style="width: 38.99480069324094%;"></div>
                                 </div>
                             </td>
-                            <td>12d</td>
+                            <td style="font-family: var(--font-mono);">13d</td>
                             <td style="font-family: var(--font-mono);">1032</td>
-                            <td style="color: var(--text-muted); font-size: 0.85rem;">Rosensweig Daniel</td>
+                            <td style="color: var(--text-muted); font-size: 12px; text-align: left;">Rosensweig Daniel</td>
                         </tr>
                         
                         <tr>
-                            <td>
-                                <strong style="font-size: 1rem;">CNVS</strong>
-                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            <td style="text-align: left;">
+                                <strong style="font-size: 14px;">CNVS</strong>
+                                <span class="status-active" style="margin-left: 8px;">LIVE</span>
                             </td>
-                            <td>Cineverse Corp.</td>
-                            <td style="font-family: var(--font-mono);">$2.97</td>
-                            <td style="font-family: var(--font-mono);">$3.10</td>
+                            <td style="text-align: left;">Cineverse Corp.</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$2.97</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$3.12</td>
                             <td>
-                                <span class="positive" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
-                                    +4.4%
+                                <span class="positive" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
+                                    +4.9%
                                 </span>
-                                <div class="perf-bar" style="width: 80px;">
+                                <div class="perf-bar" style="width: 80px; margin-top: 4px;">
                                     <div class="perf-bar-fill positive" 
-                                         style="width: 21.885521885521865%;"></div>
+                                         style="width: 24.410774410774412%;"></div>
                                 </div>
                             </td>
-                            <td>12d</td>
+                            <td style="font-family: var(--font-mono);">13d</td>
                             <td style="font-family: var(--font-mono);">180</td>
-                            <td style="color: var(--text-muted); font-size: 0.85rem;">Lindsey Mark Wayne</td>
+                            <td style="color: var(--text-muted); font-size: 12px; text-align: left;">Lindsey Mark Wayne</td>
                         </tr>
                         
                         <tr>
-                            <td>
-                                <strong style="font-size: 1rem;">CNVS</strong>
-                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            <td style="text-align: left;">
+                                <strong style="font-size: 14px;">CNVS</strong>
+                                <span class="status-active" style="margin-left: 8px;">LIVE</span>
                             </td>
-                            <td>Cineverse Corp.</td>
-                            <td style="font-family: var(--font-mono);">$2.97</td>
-                            <td style="font-family: var(--font-mono);">$3.10</td>
+                            <td style="text-align: left;">Cineverse Corp.</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$2.97</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$3.12</td>
                             <td>
-                                <span class="positive" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
-                                    +4.4%
+                                <span class="positive" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
+                                    +4.9%
                                 </span>
-                                <div class="perf-bar" style="width: 80px;">
+                                <div class="perf-bar" style="width: 80px; margin-top: 4px;">
                                     <div class="perf-bar-fill positive" 
-                                         style="width: 21.885521885521865%;"></div>
+                                         style="width: 24.410774410774412%;"></div>
                                 </div>
                             </td>
-                            <td>12d</td>
+                            <td style="font-family: var(--font-mono);">13d</td>
                             <td style="font-family: var(--font-mono);">162</td>
-                            <td style="color: var(--text-muted); font-size: 0.85rem;">McGurk Christopher J</td>
+                            <td style="color: var(--text-muted); font-size: 12px; text-align: left;">McGurk Christopher J</td>
                         </tr>
                         
                         <tr>
-                            <td>
-                                <strong style="font-size: 1rem;">DEI</strong>
-                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            <td style="text-align: left;">
+                                <strong style="font-size: 14px;">DEI</strong>
+                                <span class="status-active" style="margin-left: 8px;">LIVE</span>
                             </td>
-                            <td>Douglas Emmett Inc</td>
-                            <td style="font-family: var(--font-mono);">$9.83</td>
-                            <td style="font-family: var(--font-mono);">$10.14</td>
+                            <td style="text-align: left;">Douglas Emmett Inc</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$9.83</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$10.12</td>
                             <td>
-                                <span class="positive" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
-                                    +3.2%
+                                <span class="positive" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
+                                    +2.9%
                                 </span>
-                                <div class="perf-bar" style="width: 80px;">
+                                <div class="perf-bar" style="width: 80px; margin-top: 4px;">
                                     <div class="perf-bar-fill positive" 
-                                         style="width: 16.022380467955212%;"></div>
+                                         style="width: 14.496439471007129%;"></div>
                                 </div>
                             </td>
-                            <td>12d</td>
+                            <td style="font-family: var(--font-mono);">13d</td>
                             <td style="font-family: var(--font-mono);">74</td>
-                            <td style="color: var(--text-muted); font-size: 0.85rem;">Kaplan Jordan L</td>
+                            <td style="color: var(--text-muted); font-size: 12px; text-align: left;">Kaplan Jordan L</td>
                         </tr>
                         
                         <tr>
-                            <td>
-                                <strong style="font-size: 1rem;">FCPT</strong>
-                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            <td style="text-align: left;">
+                                <strong style="font-size: 14px;">FCPT</strong>
+                                <span class="status-active" style="margin-left: 8px;">LIVE</span>
                             </td>
-                            <td>Four Corners Property Trust, I...</td>
-                            <td style="font-family: var(--font-mono);">$24.72</td>
-                            <td style="font-family: var(--font-mono);">$25.48</td>
+                            <td style="text-align: left;">Four Corners Property Trust, I...</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$24.72</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$25.42</td>
                             <td>
-                                <span class="positive" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
-                                    +3.1%
+                                <span class="positive" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
+                                    +2.8%
                                 </span>
-                                <div class="perf-bar" style="width: 80px;">
+                                <div class="perf-bar" style="width: 80px; margin-top: 4px;">
                                     <div class="perf-bar-fill positive" 
-                                         style="width: 15.271035598705554%;"></div>
+                                         style="width: 14.158576051779992%;"></div>
                                 </div>
                             </td>
-                            <td>12d</td>
+                            <td style="font-family: var(--font-mono);">13d</td>
                             <td style="font-family: var(--font-mono);">32</td>
-                            <td style="color: var(--text-muted); font-size: 0.85rem;">Lenehan William H</td>
+                            <td style="color: var(--text-muted); font-size: 12px; text-align: left;">Lenehan William H</td>
                         </tr>
                         
                         <tr>
-                            <td>
-                                <strong style="font-size: 1rem;">LYFT</strong>
-                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            <td style="text-align: left;">
+                                <strong style="font-size: 14px;">LYFT</strong>
+                                <span class="status-active" style="margin-left: 8px;">LIVE</span>
                             </td>
-                            <td>Lyft, Inc.</td>
-                            <td style="font-family: var(--font-mono);">$13.71</td>
-                            <td style="font-family: var(--font-mono);">$13.33</td>
+                            <td style="text-align: left;">Lyft, Inc.</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$13.71</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$13.28</td>
                             <td>
-                                <span class="negative" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
-                                    -2.8%
+                                <span class="negative" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
+                                    -3.1%
                                 </span>
-                                <div class="perf-bar" style="width: 80px;">
+                                <div class="perf-bar" style="width: 80px; margin-top: 4px;">
                                     <div class="perf-bar-fill negative" 
-                                         style="width: 13.858497447118918%;"></div>
+                                         style="width: 15.681983953318799%;"></div>
                                 </div>
                             </td>
-                            <td>12d</td>
+                            <td style="font-family: var(--font-mono);">13d</td>
                             <td style="font-family: var(--font-mono);">48</td>
-                            <td style="color: var(--text-muted); font-size: 0.85rem;">Risher John David</td>
+                            <td style="color: var(--text-muted); font-size: 12px; text-align: left;">Risher John David</td>
                         </tr>
                         
                         <tr>
-                            <td>
-                                <strong style="font-size: 1rem;">CNDT</strong>
-                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            <td style="text-align: left;">
+                                <strong style="font-size: 14px;">CEVA</strong>
+                                <span class="status-active" style="margin-left: 8px;">LIVE</span>
                             </td>
-                            <td>Conduent Inc</td>
-                            <td style="font-family: var(--font-mono);">$1.54</td>
-                            <td style="font-family: var(--font-mono);">$1.48</td>
+                            <td style="text-align: left;">Ceva Inc</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$20.31</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$19.38</td>
                             <td>
-                                <span class="negative" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
-                                    -4.0%
+                                <span class="negative" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
+                                    -4.6%
                                 </span>
-                                <div class="perf-bar" style="width: 80px;">
+                                <div class="perf-bar" style="width: 80px; margin-top: 4px;">
                                     <div class="perf-bar-fill negative" 
-                                         style="width: 19.792342634652805%;"></div>
+                                         style="width: 22.895125553914323%;"></div>
                                 </div>
                             </td>
-                            <td>7d</td>
-                            <td style="font-family: var(--font-mono);">352</td>
-                            <td style="color: var(--text-muted); font-size: 0.85rem;">Agadi Harshavardhan V</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>
-                                <strong style="font-size: 1rem;">CEVA</strong>
-                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
-                            </td>
-                            <td>Ceva Inc</td>
-                            <td style="font-family: var(--font-mono);">$20.31</td>
-                            <td style="font-family: var(--font-mono);">$19.45</td>
-                            <td>
-                                <span class="negative" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
-                                    -4.2%
-                                </span>
-                                <div class="perf-bar" style="width: 80px;">
-                                    <div class="perf-bar-fill negative" 
-                                         style="width: 21.171836533727216%;"></div>
-                                </div>
-                            </td>
-                            <td>7d</td>
+                            <td style="font-family: var(--font-mono);">8d</td>
                             <td style="font-family: var(--font-mono);">21</td>
-                            <td style="color: var(--text-muted); font-size: 0.85rem;">Panush Amir</td>
+                            <td style="color: var(--text-muted); font-size: 12px; text-align: left;">Panush Amir</td>
                         </tr>
                         
                         <tr>
-                            <td>
-                                <strong style="font-size: 1rem;">TLSI</strong>
-                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            <td style="text-align: left;">
+                                <strong style="font-size: 14px;">CNDT</strong>
+                                <span class="status-active" style="margin-left: 8px;">LIVE</span>
                             </td>
-                            <td>Trisalus Life Sciences, Inc.</td>
-                            <td style="font-family: var(--font-mono);">$5.28</td>
-                            <td style="font-family: var(--font-mono);">$4.89</td>
+                            <td style="text-align: left;">Conduent Inc</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$1.54</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$1.46</td>
                             <td>
-                                <span class="negative" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
-                                    -7.3%
+                                <span class="negative" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
+                                    -5.6%
                                 </span>
-                                <div class="perf-bar" style="width: 80px;">
+                                <div class="perf-bar" style="width: 80px; margin-top: 4px;">
                                     <div class="perf-bar-fill negative" 
-                                         style="width: 36.49289099526073%;"></div>
+                                         style="width: 27.90395846852688%;"></div>
                                 </div>
                             </td>
-                            <td>7d</td>
+                            <td style="font-family: var(--font-mono);">8d</td>
+                            <td style="font-family: var(--font-mono);">352</td>
+                            <td style="color: var(--text-muted); font-size: 12px; text-align: left;">Agadi Harshavardhan V</td>
+                        </tr>
+                        
+                        <tr>
+                            <td style="text-align: left;">
+                                <strong style="font-size: 14px;">TLSI</strong>
+                                <span class="status-active" style="margin-left: 8px;">LIVE</span>
+                            </td>
+                            <td style="text-align: left;">Trisalus Life Sciences, Inc.</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$5.28</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$4.87</td>
+                            <td>
+                                <span class="negative" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
+                                    -7.7%
+                                </span>
+                                <div class="perf-bar" style="width: 80px; margin-top: 4px;">
+                                    <div class="perf-bar-fill negative" 
+                                         style="width: 38.388625592417085%;"></div>
+                                </div>
+                            </td>
+                            <td style="font-family: var(--font-mono);">8d</td>
                             <td style="font-family: var(--font-mono);">92</td>
-                            <td style="color: var(--text-muted); font-size: 0.85rem;">Szela Mary T</td>
+                            <td style="color: var(--text-muted); font-size: 12px; text-align: left;">Szela Mary T</td>
                         </tr>
                         
                     </tbody>
@@ -709,7 +571,18 @@
         <!-- Closed Trades -->
         
         <section class="table-section">
-            <h2>📊 Trade History (3)</h2>
+            <h2>
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <line x1="10" y1="9" x2="8" y2="9"></line>
+                    </svg>
+                </span>
+                Trade History (3)
+            </h2>
             
             <!-- Mobile Cards -->
             
@@ -764,60 +637,60 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Ticker</th>
+                            <th style="text-align: left;">Ticker</th>
                             <th>Entry Price</th>
                             <th>Exit Price</th>
                             <th>Return</th>
                             <th>Days Held</th>
-                            <th>Exit Reason</th>
+                            <th style="text-align: left;">Exit Reason</th>
                             <th>Exit Date</th>
                         </tr>
                     </thead>
                     <tbody>
                         
                         <tr>
-                            <td><strong>COCH</strong></td>
-                            <td style="font-family: var(--font-mono);">$0.76</td>
-                            <td style="font-family: var(--font-mono);">$0.66</td>
+                            <td style="text-align: left;"><strong>COCH</strong></td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$0.76</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$0.66</td>
                             <td>
-                                <span class="negative" style="font-family: var(--font-mono); font-weight: 600;">
+                                <span class="negative" style="font-family: var(--font-mono); font-weight: 700;">
                                     -12.5%
                                 </span>
                             </td>
-                            <td>4d</td>
-                            <td>
+                            <td style="font-family: var(--font-mono);">4d</td>
+                            <td style="text-align: left;">
                                 <span class="badge badge-stop_loss">STOP_LOSS</span>
                             </td>
                             <td style="font-family: var(--font-mono); color: var(--text-muted);">2026-02-23</td>
                         </tr>
                         
                         <tr>
-                            <td><strong>KKR</strong></td>
-                            <td style="font-family: var(--font-mono);">$103.60</td>
-                            <td style="font-family: var(--font-mono);">$92.47</td>
+                            <td style="text-align: left;"><strong>KKR</strong></td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$103.60</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$92.47</td>
                             <td>
-                                <span class="negative" style="font-family: var(--font-mono); font-weight: 600;">
+                                <span class="negative" style="font-family: var(--font-mono); font-weight: 700;">
                                     -10.7%
                                 </span>
                             </td>
-                            <td>4d</td>
-                            <td>
+                            <td style="font-family: var(--font-mono);">4d</td>
+                            <td style="text-align: left;">
                                 <span class="badge badge-stop_loss">STOP_LOSS</span>
                             </td>
                             <td style="font-family: var(--font-mono); color: var(--text-muted);">2026-02-23</td>
                         </tr>
                         
                         <tr>
-                            <td><strong>KKR</strong></td>
-                            <td style="font-family: var(--font-mono);">$103.60</td>
-                            <td style="font-family: var(--font-mono);">$92.47</td>
+                            <td style="text-align: left;"><strong>KKR</strong></td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$103.60</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$92.47</td>
                             <td>
-                                <span class="negative" style="font-family: var(--font-mono); font-weight: 600;">
+                                <span class="negative" style="font-family: var(--font-mono); font-weight: 700;">
                                     -10.7%
                                 </span>
                             </td>
-                            <td>4d</td>
-                            <td>
+                            <td style="font-family: var(--font-mono);">4d</td>
+                            <td style="text-align: left;">
                                 <span class="badge badge-stop_loss">STOP_LOSS</span>
                             </td>
                             <td style="font-family: var(--font-mono); color: var(--text-muted);">2026-02-23</td>
@@ -834,16 +707,24 @@
     </main>
 
     <footer>
-        <p>📌 Paper trading simulation only. No real money at risk.<br>
-        Last updated: 2026-03-05 18:49 UTC</p>
+        <p>
+            <span class="footer-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+            </span>
+            Paper trading simulation only. No real money at risk.<br>
+            Last updated: 2026-03-05 18:57 UTC
+        </p>
     </footer>
 
     <script>
     // Chart.js configuration
-    Chart.defaults.color = '#8b97a8';
+    Chart.defaults.color = '#71717a';
     Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
     
-    const snapshots = [{"date": "2026-03-03", "total": 9727.064299999998, "cash": 4018.7694999999994, "invested": 5708.2948, "return_pct": -2.729357000000018}, {"date": "2026-03-04", "total": 9708.3915, "cash": 4018.7694999999994, "invested": 5689.622, "return_pct": -2.9160850000000025}, {"date": "2026-03-05", "total": 9735.5335, "cash": 4018.7694999999994, "invested": 5716.764, "return_pct": -2.6446650000000043}];
+    const snapshots = [{"date": "2026-03-03", "total": 9727.064299999998, "cash": 4018.7694999999994, "invested": 5708.2948, "return_pct": -2.729357000000018}, {"date": "2026-03-04", "total": 9708.3915, "cash": 4018.7694999999994, "invested": 5689.622, "return_pct": -2.9160850000000025}, {"date": "2026-03-05", "total": 9720.4935, "cash": 4018.7694999999994, "invested": 5701.724, "return_pct": -2.7950649999999952}];
     
     if (snapshots.length > 0) {
         const ctx = document.getElementById('valueChart').getContext('2d');
@@ -854,11 +735,11 @@
         // Determine if overall positive or negative
         const lastValue = totalData[totalData.length - 1];
         const isPositive = lastValue >= initialValue;
-        const mainColor = isPositive ? '#10b981' : '#ef4444';
+        const mainColor = isPositive ? '#22c55e' : '#ef4444';
         
         // Create gradient
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, isPositive ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)');
+        gradient.addColorStop(0, isPositive ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)');
         gradient.addColorStop(1, 'transparent');
         
         new Chart(ctx, {
@@ -870,22 +751,22 @@
                         label: 'Total Value',
                         data: totalData,
                         borderColor: mainColor,
-                        borderWidth: 3,
+                        borderWidth: 2.5,
                         backgroundColor: gradient,
                         fill: true,
                         tension: 0.4,
                         pointRadius: 0,
-                        pointHoverRadius: 6,
+                        pointHoverRadius: 5,
                         pointHoverBackgroundColor: mainColor,
-                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderColor: '#0a0a0b',
                         pointHoverBorderWidth: 2,
                     },
                     {
                         label: 'Cash',
                         data: snapshots.map(s => s.cash),
-                        borderColor: '#6366f1',
+                        borderColor: '#8b5cf6',
                         borderDash: [5, 5],
-                        borderWidth: 2,
+                        borderWidth: 1.5,
                         fill: false,
                         tension: 0.4,
                         pointRadius: 0,
@@ -893,7 +774,7 @@
                     {
                         label: 'Initial Capital',
                         data: snapshots.map(() => initialValue),
-                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        borderColor: 'rgba(250, 250, 250, 0.15)',
                         borderDash: [10, 5],
                         borderWidth: 1,
                         fill: false,
@@ -913,19 +794,25 @@
                         position: 'top',
                         align: 'end',
                         labels: { 
-                            color: '#8b97a8',
+                            color: '#a1a1aa',
                             usePointStyle: true,
                             pointStyle: 'circle',
-                            padding: 20,
+                            padding: 16,
+                            boxWidth: 6,
+                            boxHeight: 6,
+                            font: { size: 11, weight: 500 }
                         } 
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(10, 14, 20, 0.95)',
-                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        backgroundColor: 'rgba(17, 17, 19, 0.95)',
+                        borderColor: '#2e2e32',
                         borderWidth: 1,
-                        padding: 16,
-                        titleFont: { size: 14, weight: 600 },
-                        bodyFont: { size: 13 },
+                        padding: 14,
+                        titleFont: { size: 12, weight: 600 },
+                        bodyFont: { size: 12, family: "'JetBrains Mono', monospace" },
+                        titleColor: '#fafafa',
+                        bodyColor: '#a1a1aa',
+                        cornerRadius: 8,
                         callbacks: {
                             label: function(ctx) {
                                 if (ctx.dataset.label === 'Initial Capital') return null;
@@ -945,7 +832,7 @@
                 scales: {
                     x: { 
                         ticks: { 
-                            color: '#5c6773',
+                            color: '#71717a',
                             maxTicksLimit: 10,
                             font: { size: 11 }
                         }, 
@@ -956,8 +843,8 @@
                     },
                     y: {
                         ticks: {
-                            color: '#5c6773',
-                            font: { size: 11 },
+                            color: '#71717a',
+                            font: { size: 11, family: "'JetBrains Mono', monospace" },
                             callback: function(v) { 
                                 return '$' + v.toLocaleString('en-US', {maximumFractionDigits: 0}); 
                             }

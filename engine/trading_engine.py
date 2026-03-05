@@ -11,6 +11,7 @@ from typing import List
 from engine.models import ProfileConfig, Signal, SignalType, AssetType
 from engine.price_service import get_price
 from engine.db_manager import DbManager
+from engine.analytics import calculate_all_metrics
 
 
 class TradingEngine:
@@ -287,11 +288,36 @@ class TradingEngine:
             total = cash + market_value
             ret_pct = ((total - profile.initial_capital) / profile.initial_capital) * 100
 
+            # Get equity curve from portfolio snapshots
+            c.execute("""
+                SELECT total_value FROM portfolio_snapshots
+                WHERE profile_id = ? ORDER BY snapshot_date
+            """, (pid,))
+            equity_curve = [r[0] for r in c.fetchall()]
+            # Add current total to equity curve
+            if total > 0:
+                equity_curve.append(total)
+
+            # Get closed trades for profit factor calculation
+            c.execute("""
+                SELECT return_pct FROM trades
+                WHERE strategy = ? AND status = 'CLOSED'
+            """, (pid,))
+            closed_trades = [{'return_pct': r[0]} for r in c.fetchall()]
+
+            # Calculate advanced metrics
+            metrics = calculate_all_metrics(equity_curve, closed_trades)
+
             c.execute("""
                 UPDATE portfolios
-                SET invested_value = ?, total = ?, return_pct = ?, updated_at = ?
+                SET invested_value = ?, total = ?, return_pct = ?,
+                    sharpe_ratio = ?, max_drawdown = ?, profit_factor = ?, sortino_ratio = ?,
+                    updated_at = ?
                 WHERE strategy = ?
-            """, (market_value, total, ret_pct, datetime.now().strftime('%Y-%m-%d'), pid))
+            """, (market_value, total, ret_pct,
+                  metrics['sharpe_ratio'], metrics['max_drawdown'],
+                  metrics['profit_factor'], metrics['sortino_ratio'],
+                  datetime.now().strftime('%Y-%m-%d'), pid))
 
         conn.commit()
         conn.close()

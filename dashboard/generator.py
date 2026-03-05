@@ -31,7 +31,8 @@ def get_leaderboard(conn):
 
     c.execute("""
         SELECT p.strategy, p.cash, p.invested_value, p.total, p.return_pct,
-               p.trades_count, p.wins, p.losses, p.updated_at
+               p.trades_count, p.wins, p.losses, p.updated_at,
+               p.sharpe_ratio, p.max_drawdown, p.profit_factor, p.sortino_ratio
         FROM portfolios p
         ORDER BY p.return_pct DESC
     """)
@@ -92,6 +93,10 @@ def get_leaderboard(conn):
             'updated_at': row[8] or '',
             'days_active': days_active,
             'last_signal': last_signal,
+            'sharpe_ratio': row[9],
+            'max_drawdown': row[10],
+            'profit_factor': row[11],
+            'sortino_ratio': row[12],
         })
 
     return leaderboard
@@ -241,16 +246,17 @@ def get_profile_detail(conn, profile_id):
     best_trade = max((t['return_pct'] for t in closed_trades), default=0)
     worst_trade = min((t['return_pct'] for t in closed_trades), default=0)
 
-    # Max drawdown from snapshots
-    max_drawdown = 0
-    peak = 0
-    for snap in snapshots:
-        val = snap['total']
-        if val > peak:
-            peak = val
-        dd = ((val - peak) / peak * 100) if peak > 0 else 0
-        if dd < max_drawdown:
-            max_drawdown = dd
+    # Max drawdown from snapshots (fallback if not in portfolio)
+    max_drawdown = portfolio.get('max_drawdown') or 0
+    if max_drawdown == 0 and snapshots:
+        peak = 0
+        for snap in snapshots:
+            val = snap['total']
+            if val > peak:
+                peak = val
+            dd = ((val - peak) / peak * 100) if peak > 0 else 0
+            if dd < max_drawdown:
+                max_drawdown = dd
 
     return {
         'meta': meta,
@@ -266,6 +272,9 @@ def get_profile_detail(conn, profile_id):
             'worst_trade': worst_trade,
             'max_drawdown': max_drawdown,
             'total_closed': total_closed,
+            'sharpe_ratio': portfolio.get('sharpe_ratio'),
+            'profit_factor': portfolio.get('profit_factor'),
+            'sortino_ratio': portfolio.get('sortino_ratio'),
         },
     }
 

@@ -64,21 +64,40 @@ def _fetch_coin_data(ticker, coin_id):
         data = resp.json()
         prices = [p[1] for p in data.get('prices', [])]
 
-        if len(prices) < 50:
+        if len(prices) < 30:
             print(f"  ! Not enough price data for {ticker} ({len(prices)} days)")
             return None
 
         current_price = prices[-1]
-        sma_50 = sum(prices[-50:]) / 50
-        sma_200 = sum(prices[-200:]) / min(len(prices), 200) if len(prices) >= 50 else None
 
-        golden_cross = sma_50 > sma_200 if sma_200 else None
+        # Short-term SMAs (for more frequent signals)
+        sma_10 = sum(prices[-10:]) / 10 if len(prices) >= 10 else None
+        sma_20 = sum(prices[-20:]) / 20 if len(prices) >= 20 else None
+        sma_30 = sum(prices[-30:]) / 30 if len(prices) >= 30 else None
 
-        # Check if cross happened recently (SMA50 was below SMA200 yesterday)
+        # Medium/long-term SMAs
+        sma_50 = sum(prices[-50:]) / 50 if len(prices) >= 50 else None
+        sma_200 = sum(prices[-200:]) / 200 if len(prices) >= 200 else None
+
+        # Golden cross: SMA50 > SMA200 (long-term bullish)
+        golden_cross = sma_50 > sma_200 if (sma_50 and sma_200) else False
+
+        # Short-term bullish: SMA10 > SMA30 (faster momentum signal)
+        short_term_bullish = sma_10 > sma_30 if (sma_10 and sma_30) else False
+
+        # Check if golden cross happened recently (SMA50 was below SMA200 yesterday)
         prev_sma_50 = sum(prices[-51:-1]) / 50 if len(prices) >= 51 else None
-        fresh_cross = False
-        if prev_sma_50 and sma_200:
-            fresh_cross = prev_sma_50 < sma_200 and sma_50 > sma_200
+        prev_sma_200 = sum(prices[-201:-1]) / 200 if len(prices) >= 201 else None
+        fresh_golden_cross = False
+        if prev_sma_50 and prev_sma_200 and sma_50 and sma_200:
+            fresh_golden_cross = prev_sma_50 <= prev_sma_200 and sma_50 > sma_200
+
+        # Check if short-term cross happened recently
+        prev_sma_10 = sum(prices[-11:-1]) / 10 if len(prices) >= 11 else None
+        prev_sma_30 = sum(prices[-31:-1]) / 30 if len(prices) >= 31 else None
+        fresh_short_term_cross = False
+        if prev_sma_10 and prev_sma_30 and sma_10 and sma_30:
+            fresh_short_term_cross = prev_sma_10 <= prev_sma_30 and sma_10 > sma_30
 
         # Calculate RSI
         from engine.indicators import rsi as calc_rsi
@@ -86,10 +105,18 @@ def _fetch_coin_data(ticker, coin_id):
 
         return {
             'price': current_price,
+            # Short-term SMAs
+            'sma_10': sma_10,
+            'sma_20': sma_20,
+            'sma_30': sma_30,
+            # Long-term SMAs
             'sma_50': sma_50,
             'sma_200': sma_200,
+            # Signals
             'golden_cross': golden_cross,
-            'fresh_golden_cross': fresh_cross,
+            'fresh_golden_cross': fresh_golden_cross,
+            'short_term_bullish': short_term_bullish,
+            'fresh_short_term_cross': fresh_short_term_cross,
             'rsi_14': rsi_14,
             'prices_history': prices[-30:],  # Last 30 days for context
         }

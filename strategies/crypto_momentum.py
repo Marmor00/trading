@@ -1,7 +1,12 @@
 """
-Crypto Momentum strategy: Golden Cross on BTC, ETH, SOL, ADA, DOGE.
+Crypto Momentum strategy: Multi-signal approach for BTC, ETH, SOL, ADA, DOGE.
 
-Buy when 50-day SMA crosses above 200-day SMA (golden cross).
+Primary signal: Golden Cross (SMA50 > SMA200) - rare but strong.
+Secondary signals (for more frequent trading):
+  - Short-term momentum: SMA10 > SMA30 (faster moving averages)
+  - RSI oversold bounce: RSI < 35 (oversold, potential reversal)
+  - Price above SMA20: Simple trend-following
+
 Optional RSI filter: skip buy if RSI > 70 (overbought).
 Sell via stop-loss/take-profit/time exits.
 
@@ -23,7 +28,7 @@ class CryptoMomentumStrategy(BaseStrategy):
             ProfileConfig(
                 profile_id='crypto_btc',
                 display_name='BTC Momentum',
-                description='Buy BTC on golden cross (SMA50 > SMA200), sell on death cross',
+                description='Buy BTC on momentum signals (golden cross, short-term trend, RSI oversold)',
                 asset_type=AssetType.CRYPTO,
                 data_source='coingecko',
                 initial_capital=10000.0,
@@ -42,7 +47,7 @@ class CryptoMomentumStrategy(BaseStrategy):
             ProfileConfig(
                 profile_id='crypto_eth',
                 display_name='ETH Momentum',
-                description='Buy ETH on golden cross (SMA50 > SMA200), sell on death cross',
+                description='Buy ETH on momentum signals (golden cross, short-term trend, RSI oversold)',
                 asset_type=AssetType.CRYPTO,
                 data_source='coingecko',
                 initial_capital=10000.0,
@@ -61,7 +66,7 @@ class CryptoMomentumStrategy(BaseStrategy):
             ProfileConfig(
                 profile_id='crypto_sol',
                 display_name='SOL Momentum',
-                description='Buy SOL on golden cross + RSI filter (skip if overbought)',
+                description='Buy SOL on momentum signals + RSI filter (skip if overbought)',
                 asset_type=AssetType.CRYPTO,
                 data_source='coingecko',
                 initial_capital=10000.0,
@@ -81,7 +86,7 @@ class CryptoMomentumStrategy(BaseStrategy):
             ProfileConfig(
                 profile_id='crypto_ada',
                 display_name='ADA Momentum',
-                description='Buy ADA on golden cross + RSI filter (skip if overbought)',
+                description='Buy ADA on momentum signals + RSI filter (skip if overbought)',
                 asset_type=AssetType.CRYPTO,
                 data_source='coingecko',
                 initial_capital=10000.0,
@@ -101,7 +106,7 @@ class CryptoMomentumStrategy(BaseStrategy):
             ProfileConfig(
                 profile_id='crypto_doge',
                 display_name='DOGE Momentum',
-                description='Buy DOGE on golden cross + RSI filter (skip if overbought)',
+                description='Buy DOGE on momentum signals + RSI filter (skip if overbought)',
                 asset_type=AssetType.CRYPTO,
                 data_source='coingecko',
                 initial_capital=10000.0,
@@ -130,35 +135,39 @@ class CryptoMomentumStrategy(BaseStrategy):
             return []
 
         active_tickers = {p['ticker'] for p in active_positions}
-        signals = []
 
-        golden_cross = coin_data.get('golden_cross')
+        # Already holding this coin
+        if coin in active_tickers:
+            return []
+
+        signals = []
+        price = coin_data.get('price')
+        sma_10 = coin_data.get('sma_10')
+        sma_20 = coin_data.get('sma_20')
+        sma_30 = coin_data.get('sma_30')
         sma_50 = coin_data.get('sma_50')
         sma_200 = coin_data.get('sma_200')
-        price = coin_data.get('price')
+        rsi_val = coin_data.get('rsi_14')
+        golden_cross = coin_data.get('golden_cross')
+        short_term_bullish = coin_data.get('short_term_bullish')
 
-        if golden_cross is None or sma_200 is None:
-            return []  # Not enough data
+        if price is None:
+            return []
 
-        # RSI filter: skip if overbought
+        # RSI filter: skip if overbought (only for profiles with use_rsi_filter=True)
         use_rsi = profile.extra_params.get('use_rsi_filter', False)
-        if use_rsi and golden_cross:
-            rsi_val = coin_data.get('rsi_14')
-            if rsi_val is not None and rsi_val > 70:
-                return []  # Overbought, skip even with golden cross
+        if use_rsi and rsi_val is not None and rsi_val > 70:
+            return []  # Overbought, skip all signals
 
-        # BUY: golden cross (SMA50 > SMA200) and not already holding
-        if golden_cross and coin not in active_tickers:
-            rsi_info = ""
-            rsi_val = coin_data.get('rsi_14')
-            if rsi_val is not None:
-                rsi_info = f", RSI {rsi_val:.0f}"
+        rsi_info = f", RSI {rsi_val:.0f}" if rsi_val else ""
 
+        # Signal 1: Golden Cross (strongest signal, rare)
+        if golden_cross and sma_50 and sma_200:
             signals.append(Signal(
                 ticker=coin,
                 signal_type=SignalType.BUY,
                 asset_type=AssetType.CRYPTO,
-                confidence=min((sma_50 - sma_200) / sma_200 * 10, 1.0),
+                confidence=0.9,
                 reason=f"Golden cross: SMA50 ${sma_50:,.0f} > SMA200 ${sma_200:,.0f}{rsi_info}",
                 metadata={
                     'company_name': f'{coin}/USD',
@@ -169,11 +178,86 @@ class CryptoMomentumStrategy(BaseStrategy):
                     'value': price,
                     'cluster_size': 0,
                     'explanation': (
-                        "Golden cross means the 50-day average price crossed above the 200-day average. "
-                        "This is a classic bullish signal indicating upward momentum."
+                        "Golden cross: 50-day average crossed above 200-day average. "
+                        "Classic bullish signal indicating strong upward momentum."
                     ),
                 },
             ))
+            return signals  # Golden cross takes priority
+
+        # Signal 2: Short-term momentum (SMA10 > SMA30)
+        if short_term_bullish and sma_10 and sma_30:
+            signals.append(Signal(
+                ticker=coin,
+                signal_type=SignalType.BUY,
+                asset_type=AssetType.CRYPTO,
+                confidence=0.7,
+                reason=f"Short-term bullish: SMA10 ${sma_10:,.2f} > SMA30 ${sma_30:,.2f}{rsi_info}",
+                metadata={
+                    'company_name': f'{coin}/USD',
+                    'owner_name': 'MOMENTUM',
+                    'title': 'Short-Term Momentum',
+                    'trade_date': '',
+                    'score': 0,
+                    'value': price,
+                    'cluster_size': 0,
+                    'explanation': (
+                        "Short-term momentum: 10-day average above 30-day average. "
+                        "Indicates recent price strength and potential continuation."
+                    ),
+                },
+            ))
+            return signals
+
+        # Signal 3: RSI oversold bounce (RSI < 35)
+        if rsi_val is not None and rsi_val < 35:
+            signals.append(Signal(
+                ticker=coin,
+                signal_type=SignalType.BUY,
+                asset_type=AssetType.CRYPTO,
+                confidence=0.6,
+                reason=f"RSI oversold: {rsi_val:.0f} (below 35 threshold)",
+                metadata={
+                    'company_name': f'{coin}/USD',
+                    'owner_name': 'MOMENTUM',
+                    'title': 'Oversold Bounce',
+                    'trade_date': '',
+                    'score': 0,
+                    'value': price,
+                    'cluster_size': 0,
+                    'explanation': (
+                        f"RSI at {rsi_val:.0f} indicates oversold conditions. "
+                        "Price may be due for a bounce or reversal."
+                    ),
+                },
+            ))
+            return signals
+
+        # Signal 4: Price above SMA20 (basic trend following)
+        if sma_20 and price > sma_20:
+            pct_above = ((price - sma_20) / sma_20) * 100
+            # Only trigger if recently crossed (within 2% above)
+            if 0 < pct_above < 2:
+                signals.append(Signal(
+                    ticker=coin,
+                    signal_type=SignalType.BUY,
+                    asset_type=AssetType.CRYPTO,
+                    confidence=0.5,
+                    reason=f"Price ${price:,.2f} crossed above SMA20 ${sma_20:,.2f} (+{pct_above:.1f}%){rsi_info}",
+                    metadata={
+                        'company_name': f'{coin}/USD',
+                        'owner_name': 'MOMENTUM',
+                        'title': 'Trend Following',
+                        'trade_date': '',
+                        'score': 0,
+                        'value': price,
+                        'cluster_size': 0,
+                        'explanation': (
+                            "Price just crossed above 20-day moving average. "
+                            "Simple trend-following signal suggesting upward momentum."
+                        ),
+                    },
+                ))
 
         return signals
 

@@ -2,3 +2,9 @@ beautifulsoup4==4.12.3
 requests==2.31.0
 jinja2==3.1.3
 yfinance==0.2.36
+backtesting>=0.3.3
+pandas-ta>=0.3.14b0
+
+# OpenBB - unified financial data (minimal install for GitHub Actions)
+openbb-yfinance>=1.3.0
+openbb-crypto>=1.2.0

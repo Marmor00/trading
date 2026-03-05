@@ -1,17 +1,18 @@
 """
 Price fetching service with multiple providers.
 
-Providers:
-- Massive API (stocks, requires API key)
-- Yahoo Finance via yfinance (stocks, ETFs, free)
-- CoinGecko (crypto, free, 30 calls/min)
+Provider priority:
+1. OpenBB SDK (unified interface, yfinance backend)
+2. Massive API (stocks, requires API key)
+3. Yahoo Finance direct (stocks, ETFs, free)
+4. CoinGecko direct (crypto, free, 30 calls/min)
 """
 
 import os
-import time
 import requests
 
 from engine.models import AssetType
+from engine import openbb_service
 
 
 MASSIVE_API_KEY = os.environ.get('MASSIVE_API_KEY', '')
@@ -28,10 +29,15 @@ def get_price(ticker, asset_type=AssetType.STOCK):
         return _price_cache[cache_key]
 
     price = None
+    
     if asset_type == AssetType.CRYPTO:
-        price = _get_price_coingecko(ticker)
+        # Try OpenBB first, then CoinGecko fallback
+        price = openbb_service.get_crypto_price(ticker) or _get_price_coingecko(ticker)
     else:
-        price = _get_price_massive(ticker) or _get_price_yfinance(ticker)
+        # Try OpenBB first, then Massive, then direct Yahoo
+        price = openbb_service.get_stock_price(ticker) or \
+                _get_price_massive(ticker) or \
+                _get_price_yfinance(ticker)
 
     if price:
         _price_cache[cache_key] = price
@@ -64,7 +70,7 @@ def _get_price_massive(ticker):
 
 
 def _get_price_yfinance(ticker):
-    """Fetch price from Yahoo Finance API."""
+    """Fetch price from Yahoo Finance API (direct, no library)."""
     try:
         resp = requests.get(
             f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?interval=1d&range=1d",
@@ -96,7 +102,7 @@ CRYPTO_IDS = {
 
 
 def _get_price_coingecko(ticker):
-    """Fetch price from CoinGecko free API."""
+    """Fetch price from CoinGecko free API (fallback)."""
     coin_id = CRYPTO_IDS.get(ticker.upper())
     if not coin_id:
         return None
@@ -116,7 +122,22 @@ def _get_price_coingecko(ticker):
 
 
 def get_crypto_history(ticker, days=200):
-    """Fetch historical prices from CoinGecko for SMA calculations."""
+    """
+    Fetch historical prices for SMA calculations.
+    
+    Uses OpenBB first, falls back to CoinGecko direct API.
+    """
+    # Try OpenBB first
+    prices = openbb_service.get_historical_prices(ticker, days=days, asset_type="crypto")
+    if prices:
+        return prices
+    
+    # Fallback to CoinGecko direct
+    return _get_crypto_history_coingecko(ticker, days)
+
+
+def _get_crypto_history_coingecko(ticker, days=200):
+    """Fetch historical prices from CoinGecko (fallback)."""
     coin_id = CRYPTO_IDS.get(ticker.upper())
     if not coin_id:
         return []
@@ -129,6 +150,39 @@ def get_crypto_history(ticker, days=200):
             data = resp.json()
             prices = [p[1] for p in data.get('prices', [])]
             return prices
+    except Exception:
+        pass
+    return []
+
+
+def get_stock_history(ticker, days=200):
+    """
+    Fetch historical stock prices for SMA calculations.
+    
+    Uses OpenBB, falls back to yfinance direct.
+    """
+    # Try OpenBB first
+    prices = openbb_service.get_historical_prices(ticker, days=days, asset_type="stock")
+    if prices:
+        return prices
+    
+    # Fallback to yfinance direct
+    return _get_stock_history_yfinance(ticker, days)
+
+
+def _get_stock_history_yfinance(ticker, days=200):
+    """Fetch historical stock prices from Yahoo Finance (fallback)."""
+    try:
+        resp = requests.get(
+            f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?interval=1d&range={days}d",
+            headers={'User-Agent': 'Mozilla/5.0'},
+            timeout=15
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            prices = data['chart']['result'][0]['indicators']['quote'][0].get('close', [])
+            # Filter out None values
+            return [p for p in prices if p is not None]
     except Exception:
         pass
     return []

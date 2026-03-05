@@ -4,63 +4,292 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sector Rotation | Trading Simulation Lab</title>
+    <meta name="description" content="Buy top 3 performing sector ETFs, rebalance monthly">
     <link rel="stylesheet" href="static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        /* Profile-specific enhancements */
+        .profile-hero {
+            position: relative;
+            padding: var(--space-xl) 0;
+            margin-bottom: var(--space-2xl);
+            text-align: center;
+        }
+        
+        .profile-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 100%;
+            background: radial-gradient(ellipse, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .profile-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-xl);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
+        }
+        
+        .profile-badge .asset-type {
+            padding: var(--space-xs) var(--space-sm);
+            background: var(--accent-gradient);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+        }
+        
+        .profile-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .profile-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Big number display */
+        .big-stat {
+            text-align: center;
+            padding: var(--space-xl);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .big-stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-gradient);
+        }
+        
+        .big-stat.positive::before { background: var(--positive-gradient); }
+        .big-stat.negative::before { background: var(--negative-gradient); }
+        
+        .big-stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            letter-spacing: -0.03em;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .big-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-md);
+            margin-bottom: var(--space-2xl);
+        }
+        
+        /* Trade cards for mobile */
+        .trade-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin-bottom: var(--space-sm);
+            display: none;
+        }
+        
+        .trade-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .trade-card-ticker {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .trade-card-return {
+            font-family: var(--font-mono);
+            font-weight: 600;
+        }
+        
+        .trade-card-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-xs);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Status indicators */
+        .status-active {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            color: var(--positive);
+        }
+        
+        .status-active::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--positive);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        /* Performance bar */
+        .perf-bar {
+            height: 4px;
+            background: var(--bg-secondary);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: var(--space-xs);
+        }
+        
+        .perf-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+        
+        .perf-bar-fill.positive { background: var(--positive-gradient); }
+        .perf-bar-fill.negative { background: var(--negative-gradient); }
+        
+        @media (max-width: 768px) {
+            .profile-title {
+                font-size: 1.75rem;
+            }
+            
+            .big-stat-value {
+                font-size: 2.25rem;
+            }
+            
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .trade-card {
+                display: block;
+            }
+            
+            .table-wrapper {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
         <a href="index.html" class="back-link">Back to Lab</a>
-        <h1>Sector Rotation</h1>
-        <p class="subtitle">Buy top 3 performing sector ETFs, rebalance monthly</p>
+        <div class="profile-badge">
+            <span class="asset-type">etf</span>
+            <span>none</span>
+        </div>
+        <h1 class="profile-title">Sector Rotation</h1>
+        <p class="profile-description">Buy top 3 performing sector ETFs, rebalance monthly</p>
     </header>
 
     <main>
-        <!-- Key Metrics -->
+        <!-- Primary Stats -->
+        <div class="stats-row">
+            <div class="big-stat">
+                <div class="big-stat-value">$10,014</div>
+                <div class="big-stat-label">Total Portfolio Value</div>
+            </div>
+            <div class="big-stat positive">
+                <div class="big-stat-value positive">
+                    +0.1%
+                </div>
+                <div class="big-stat-label">Total Return</div>
+            </div>
+        </div>
+
+        <!-- Key Metrics Grid -->
         <section class="metrics-grid">
-            <div class="metric">
-                <div class="metric-label">Total Value</div>
-                <div class="metric-value">$10,076</div>
-            </div>
-            <div class="metric positive">
-                <div class="metric-label">Return</div>
-                <div class="metric-value">+0.8%</div>
-            </div>
             <div class="metric">
                 <div class="metric-label">Win Rate</div>
                 <div class="metric-value">0%</div>
+                <div class="perf-bar">
+                    <div class="perf-bar-fill positive" style="width: 0%;"></div>
+                </div>
             </div>
+            
             <div class="metric">
-                <div class="metric-label">Trades</div>
-                <div class="metric-value">0 closed</div>
+                <div class="metric-label">Total Trades</div>
+                <div class="metric-value">0</div>
+                <div class="metric-subtitle">closed positions</div>
             </div>
-            <div class="metric">
+            
+            <div class="metric positive">
                 <div class="metric-label">Avg Win</div>
-                <div class="metric-value positive">0.0%</div>
+                <div class="metric-value positive">+0.0%</div>
             </div>
-            <div class="metric">
+            
+            <div class="metric negative">
                 <div class="metric-label">Avg Loss</div>
                 <div class="metric-value negative">0.0%</div>
             </div>
-            <div class="metric">
+            
+            <div class="metric positive">
                 <div class="metric-label">Best Trade</div>
-                <div class="metric-value positive">0.0%</div>
+                <div class="metric-value positive">+0.0%</div>
             </div>
-            <div class="metric">
+            
+            <div class="metric negative">
                 <div class="metric-label">Max Drawdown</div>
                 <div class="metric-value negative">0.0%</div>
             </div>
+            
+            <div class="metric">
+                <div class="metric-label">Cash Available</div>
+                <div class="metric-value">$3,543</div>
+            </div>
+            
+            <div class="metric">
+                <div class="metric-label">Invested</div>
+                <div class="metric-value">$6,470</div>
+            </div>
         </section>
 
-        <!-- Profile Config -->
+        <!-- Strategy Configuration -->
         <section class="config-section">
-            <h2>Configuration</h2>
+            <h2>Strategy Configuration</h2>
             <div class="config-grid">
-                <span>Asset Type: <strong>etf</strong></span>
-                <span>Data Source: <strong>none</strong></span>
                 <span>Initial Capital: <strong>$10000</strong></span>
                 <span>Position Size: <strong>30.0%</strong></span>
                 <span>Max Positions: <strong>3</strong></span>
-                <span>Stop Loss: <strong>-12.0%</strong></span>
+                <span>Stop Loss: <strong>--12.0%</strong></span>
                 <span>Take Profit: <strong>+25.0%</strong></span>
                 <span>Max Hold: <strong>35 days</strong></span>
             </div>
@@ -68,9 +297,9 @@
 
         <!-- Portfolio Value Chart -->
         <section class="chart-section">
-            <h2>Portfolio Value Over Time</h2>
+            <h2>Portfolio Performance</h2>
             
-            <div class="chart-container">
+            <div class="chart-container large">
                 <canvas id="valueChart"></canvas>
             </div>
             
@@ -79,54 +308,137 @@
         <!-- Active Positions -->
         
         <section class="table-section">
-            <h2>Active Positions (3)</h2>
+            <h2>🟢 Active Positions (3)</h2>
+            
+            <!-- Mobile Cards -->
+            
+            <div class="trade-card">
+                <div class="trade-card-header">
+                    <span class="trade-card-ticker">XLK</span>
+                    <span class="trade-card-return positive">
+                        0.8%
+                    </span>
+                </div>
+                <div class="trade-card-details">
+                    <span>Entry: $137.50</span>
+                    <span>Current: $138.56</span>
+                    <span>Days: 2</span>
+                    <span>Shares: 21</span>
+                </div>
+            </div>
+            
+            <div class="trade-card">
+                <div class="trade-card-header">
+                    <span class="trade-card-ticker">XLE</span>
+                    <span class="trade-card-return negative">
+                        -0.2%
+                    </span>
+                </div>
+                <div class="trade-card-details">
+                    <span>Entry: $56.52</span>
+                    <span>Current: $56.39</span>
+                    <span>Days: 2</span>
+                    <span>Shares: 26</span>
+                </div>
+            </div>
+            
+            <div class="trade-card">
+                <div class="trade-card-header">
+                    <span class="trade-card-ticker">XLF</span>
+                    <span class="trade-card-return negative">
+                        -0.2%
+                    </span>
+                </div>
+                <div class="trade-card-details">
+                    <span>Entry: $51.21</span>
+                    <span>Current: $51.09</span>
+                    <span>Days: 2</span>
+                    <span>Shares: 41</span>
+                </div>
+            </div>
+            
+            
+            <!-- Desktop Table -->
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
                             <th>Ticker</th>
                             <th>Company</th>
-                            <th>Entry</th>
-                            <th>Current</th>
+                            <th>Entry Price</th>
+                            <th>Current Price</th>
                             <th>Return</th>
-                            <th>Days</th>
+                            <th>Days Held</th>
                             <th>Shares</th>
-                            <th>Insider</th>
+                            <th>Insider/Source</th>
                         </tr>
                     </thead>
                     <tbody>
                         
                         <tr>
-                            <td><strong>XLK</strong></td>
+                            <td>
+                                <strong style="font-size: 1rem;">XLK</strong>
+                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            </td>
                             <td>XLK Sector ETF</td>
-                            <td>$137.50</td>
-                            <td>$141.04</td>
-                            <td class="positive">2.6%</td>
-                            <td>5</td>
-                            <td>21</td>
-                            <td>ROTATION</td>
+                            <td style="font-family: var(--font-mono);">$137.50</td>
+                            <td style="font-family: var(--font-mono);">$138.56</td>
+                            <td>
+                                <span class="positive" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
+                                    +0.8%
+                                </span>
+                                <div class="perf-bar" style="width: 80px;">
+                                    <div class="perf-bar-fill positive" 
+                                         style="width: 3.8545454545454625%;"></div>
+                                </div>
+                            </td>
+                            <td>2d</td>
+                            <td style="font-family: var(--font-mono);">21</td>
+                            <td style="color: var(--text-muted); font-size: 0.85rem;">ROTATION</td>
                         </tr>
                         
                         <tr>
-                            <td><strong>XLE</strong></td>
+                            <td>
+                                <strong style="font-size: 1rem;">XLE</strong>
+                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            </td>
                             <td>XLE Sector ETF</td>
-                            <td>$56.52</td>
-                            <td>$56.58</td>
-                            <td class="positive">0.1%</td>
-                            <td>5</td>
-                            <td>26</td>
-                            <td>ROTATION</td>
+                            <td style="font-family: var(--font-mono);">$56.52</td>
+                            <td style="font-family: var(--font-mono);">$56.39</td>
+                            <td>
+                                <span class="negative" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
+                                    -0.2%
+                                </span>
+                                <div class="perf-bar" style="width: 80px;">
+                                    <div class="perf-bar-fill negative" 
+                                         style="width: 1.150035385704198%;"></div>
+                                </div>
+                            </td>
+                            <td>2d</td>
+                            <td style="font-family: var(--font-mono);">26</td>
+                            <td style="color: var(--text-muted); font-size: 0.85rem;">ROTATION</td>
                         </tr>
                         
                         <tr>
-                            <td><strong>XLF</strong></td>
+                            <td>
+                                <strong style="font-size: 1rem;">XLF</strong>
+                                <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
+                            </td>
                             <td>XLF Sector ETF</td>
-                            <td>$51.21</td>
-                            <td>$51.23</td>
-                            <td class="positive">0.0%</td>
-                            <td>5</td>
-                            <td>41</td>
-                            <td>ROTATION</td>
+                            <td style="font-family: var(--font-mono);">$51.21</td>
+                            <td style="font-family: var(--font-mono);">$51.09</td>
+                            <td>
+                                <span class="negative" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
+                                    -0.2%
+                                </span>
+                                <div class="perf-bar" style="width: 80px;">
+                                    <div class="perf-bar-fill negative" 
+                                         style="width: 1.220464752977934%;"></div>
+                                </div>
+                            </td>
+                            <td>2d</td>
+                            <td style="font-family: var(--font-mono);">41</td>
+                            <td style="color: var(--text-muted); font-size: 0.85rem;">ROTATION</td>
                         </tr>
                         
                     </tbody>
@@ -137,38 +449,75 @@
 
         <!-- Closed Trades -->
         
+
+        <!-- No trades message -->
+        
     </main>
 
     <footer>
-        <p>Paper trading only. No real money at risk. Updated: 2026-03-05 15:12 UTC</p>
+        <p>📌 Paper trading simulation only. No real money at risk.<br>
+        Last updated: 2026-03-05 18:49 UTC</p>
     </footer>
 
     <script>
-    const snapshots = [{"date": "2026-03-03", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-04", "total": 10058.494999999999, "cash": 3543.3699999999994, "invested": 6515.125, "return_pct": 0.5849499999999899}, {"date": "2026-03-05", "total": 10076.384999999998, "cash": 3543.3699999999994, "invested": 6533.014999999999, "return_pct": 0.7638499999999839}];
+    // Chart.js configuration
+    Chart.defaults.color = '#8b97a8';
+    Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    
+    const snapshots = [{"date": "2026-03-03", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-04", "total": 10000.0, "cash": 3543.3699999999994, "invested": 6456.63, "return_pct": 0.0}, {"date": "2026-03-05", "total": 10013.755, "cash": 3543.3699999999994, "invested": 6470.385, "return_pct": 0.13754999999999198}];
+    
     if (snapshots.length > 0) {
+        const ctx = document.getElementById('valueChart').getContext('2d');
         const labels = snapshots.map(s => s.date);
-        new Chart(document.getElementById('valueChart'), {
+        const totalData = snapshots.map(s => s.total);
+        const initialValue = totalData[0] || 10000;
+        
+        // Determine if overall positive or negative
+        const lastValue = totalData[totalData.length - 1];
+        const isPositive = lastValue >= initialValue;
+        const mainColor = isPositive ? '#10b981' : '#ef4444';
+        
+        // Create gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, isPositive ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)');
+        gradient.addColorStop(1, 'transparent');
+        
+        new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [
                     {
                         label: 'Total Value',
-                        data: snapshots.map(s => s.total),
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        data: totalData,
+                        borderColor: mainColor,
+                        borderWidth: 3,
+                        backgroundColor: gradient,
                         fill: true,
-                        tension: 0.3,
-                        pointRadius: 3,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: mainColor,
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 2,
                     },
                     {
                         label: 'Cash',
                         data: snapshots.map(s => s.cash),
-                        borderColor: '#2ecc71',
-                        borderDash: [3, 3],
-                        borderWidth: 1.5,
+                        borderColor: '#6366f1',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
                         fill: false,
-                        tension: 0.3,
+                        tension: 0.4,
+                        pointRadius: 0,
+                    },
+                    {
+                        label: 'Initial Capital',
+                        data: snapshots.map(() => initialValue),
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        borderDash: [10, 5],
+                        borderWidth: 1,
+                        fill: false,
                         pointRadius: 0,
                     }
                 ]
@@ -176,24 +525,68 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
                 plugins: {
-                    legend: { labels: { color: '#ccc' } },
+                    legend: { 
+                        position: 'top',
+                        align: 'end',
+                        labels: { 
+                            color: '#8b97a8',
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 20,
+                        } 
+                    },
                     tooltip: {
+                        backgroundColor: 'rgba(10, 14, 20, 0.95)',
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 1,
+                        padding: 16,
+                        titleFont: { size: 14, weight: 600 },
+                        bodyFont: { size: 13 },
                         callbacks: {
                             label: function(ctx) {
-                                return ctx.dataset.label + ': $' + ctx.parsed.y.toFixed(0);
+                                if (ctx.dataset.label === 'Initial Capital') return null;
+                                return ctx.dataset.label + ': $' + ctx.parsed.y.toLocaleString('en-US', {maximumFractionDigits: 0});
+                            },
+                            afterBody: function(items) {
+                                const total = items.find(i => i.dataset.label === 'Total Value');
+                                if (total) {
+                                    const returnPct = ((total.parsed.y - initialValue) / initialValue * 100);
+                                    const sign = returnPct >= 0 ? '+' : '';
+                                    return '\nReturn: ' + sign + returnPct.toFixed(2) + '%';
+                                }
                             }
                         }
                     }
                 },
                 scales: {
-                    x: { ticks: { color: '#888' }, grid: { color: '#333' } },
+                    x: { 
+                        ticks: { 
+                            color: '#5c6773',
+                            maxTicksLimit: 10,
+                            font: { size: 11 }
+                        }, 
+                        grid: { 
+                            color: 'rgba(255, 255, 255, 0.04)',
+                            drawBorder: false 
+                        } 
+                    },
                     y: {
                         ticks: {
-                            color: '#888',
-                            callback: function(v) { return '$' + v.toFixed(0); }
+                            color: '#5c6773',
+                            font: { size: 11 },
+                            callback: function(v) { 
+                                return '$' + v.toLocaleString('en-US', {maximumFractionDigits: 0}); 
+                            }
                         },
-                        grid: { color: '#333' }
+                        grid: { 
+                            color: 'rgba(255, 255, 255, 0.04)',
+                            drawBorder: false 
+                        }
                     }
                 }
             }

@@ -4,353 +4,997 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Simulation Lab</title>
+    <meta name="description" content="Paper trading simulation comparing 25 strategies in real-time market conditions">
     <link rel="stylesheet" href="static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <header>
-        <h1>Trading Simulation Lab</h1>
-        <p class="subtitle">25 strategies competing | Paper trading | Updated: 2026-03-05 15:12 UTC</p>
+        <div class="logo">
+            <div class="logo-icon">📊</div>
+            <h1>Trading Simulation Lab</h1>
+        </div>
+        <p class="subtitle">
+            <span>25 strategies</span> competing • Paper trading • Updated: 2026-03-05 18:49 UTC
+        </p>
     </header>
 
     <main>
-        <!-- Summary Cards -->
-        <section class="cards">
+        <!-- Hero Stats Section -->
+        <section class="hero-stats">
             
-            <a href="profile_score_70.html" class="card positive">
-                <div class="card-rank">#1</div>
+            
+            
+            
+            
+            
+            
+            <div class="hero-stat">
+                <div class="hero-stat-icon">💰</div>
+                <div class="hero-stat-label">Total Portfolio Value</div>
+                <div class="hero-stat-value">$249,048</div>
+                <div class="hero-stat-detail">Across 25 strategies</div>
+            </div>
+            
+            <div class="hero-stat positive">
+                <div class="hero-stat-icon">🏆</div>
+                <div class="hero-stat-label">Best Performer</div>
+                <div class="hero-stat-value">+0.9%</div>
+                <div class="hero-stat-detail">Score >=70</div>
+            </div>
+            
+            <div class="hero-stat negative">
+                <div class="hero-stat-icon">📉</div>
+                <div class="hero-stat-label">Worst Performer</div>
+                <div class="hero-stat-value">-3.4%</div>
+                <div class="hero-stat-detail">Score >=80</div>
+            </div>
+            
+            <div class="hero-stat">
+                <div class="hero-stat-icon">📈</div>
+                <div class="hero-stat-label">Active Positions</div>
+                <div class="hero-stat-value">67</div>
+                <div class="hero-stat-detail">2/25 profitable</div>
+            </div>
+        </section>
+
+        <!-- Filter Bar -->
+        <section class="filter-bar">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="stock">Stocks</button>
+            <button class="filter-btn" data-filter="crypto">Crypto</button>
+            <button class="filter-btn" data-filter="etf">ETFs</button>
+            <button class="filter-btn" data-filter="profitable">Profitable Only</button>
+            <input type="text" class="filter-search" placeholder="🔍 Search strategies..." id="searchInput">
+        </section>
+
+        <!-- Strategy Cards Grid -->
+        <section class="cards" id="cardsContainer">
+            
+            <a href="profile_score_70.html" 
+               class="card positive"
+               data-asset="stock"
+               data-name="score >=70"
+               data-profitable="true">
+                <div class="card-header">
+                    <div class="card-rank top-3">#1</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">Score >=70</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$10,160</div>
-                <div class="card-return">+1.6%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-score_70" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,089</div>
+                    <div class="card-return">+0.9%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 9</span>
-                    <span>Closed: 6</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 9
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 5
+                    </div>
                     
-                    <span>WR: 33%</span>
+                    <div class="card-detail-item">
+                        <span>Win Rate:</span> 20%
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_congress_all.html" class="card positive">
-                <div class="card-rank">#2</div>
-                <div class="card-name">Congress >$15k</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$10,082</div>
-                <div class="card-return">+0.8%</div>
-                <div class="card-details">
-                    <span>Active: 4</span>
-                    <span>Closed: 0</span>
-                    
+            <a href="profile_sector_rotation.html" 
+               class="card positive"
+               data-asset="etf"
+               data-name="sector rotation"
+               data-profitable="true">
+                <div class="card-header">
+                    <div class="card-rank top-3">#2</div>
+                    <span class="card-asset etf">etf</span>
                 </div>
-            </a>
-            
-            <a href="profile_sector_rotation.html" class="card positive">
-                <div class="card-rank">#3</div>
+                
                 <div class="card-name">Sector Rotation</div>
-                <div class="card-asset">etf</div>
-                <div class="card-value">$10,076</div>
-                <div class="card-return">+0.8%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-sector_rotation" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,014</div>
+                    <div class="card-return">+0.1%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 3</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 3
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_score_60.html" class="card positive">
-                <div class="card-rank">#4</div>
-                <div class="card-name">Score >=60</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$10,055</div>
-                <div class="card-return">+0.6%</div>
-                <div class="card-details">
-                    <span>Active: 12</span>
-                    <span>Closed: 3</span>
-                    
-                    <span>WR: 0%</span>
-                    
+            <a href="profile_crypto_btc.html" 
+               class="card "
+               data-asset="crypto"
+               data-name="btc momentum"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank top-3">#3</div>
+                    <span class="card-asset crypto">crypto</span>
                 </div>
-            </a>
-            
-            <a href="profile_spy_benchmark.html" class="card positive">
-                <div class="card-rank">#5</div>
-                <div class="card-name">SPY Buy & Hold</div>
-                <div class="card-asset">etf</div>
-                <div class="card-value">$10,046</div>
-                <div class="card-return">+0.5%</div>
-                <div class="card-details">
-                    <span>Active: 1</span>
-                    <span>Closed: 0</span>
-                    
-                </div>
-            </a>
-            
-            <a href="profile_congress_large.html" class="card positive">
-                <div class="card-rank">#6</div>
-                <div class="card-name">Congress >$50k</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$10,028</div>
-                <div class="card-return">+0.3%</div>
-                <div class="card-details">
-                    <span>Active: 3</span>
-                    <span>Closed: 0</span>
-                    
-                </div>
-            </a>
-            
-            <a href="profile_crypto_btc.html" class="card ">
-                <div class="card-rank">#7</div>
+                
                 <div class="card-name">BTC Momentum</div>
-                <div class="card-asset">crypto</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-crypto_btc" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 1d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_crypto_eth.html" class="card ">
-                <div class="card-rank">#8</div>
+            <a href="profile_crypto_eth.html" 
+               class="card "
+               data-asset="crypto"
+               data-name="eth momentum"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#4</div>
+                    <span class="card-asset crypto">crypto</span>
+                </div>
+                
                 <div class="card-name">ETH Momentum</div>
-                <div class="card-asset">crypto</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-crypto_eth" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 1d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_crypto_sol.html" class="card ">
-                <div class="card-rank">#9</div>
+            <a href="profile_crypto_sol.html" 
+               class="card "
+               data-asset="crypto"
+               data-name="sol momentum"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#5</div>
+                    <span class="card-asset crypto">crypto</span>
+                </div>
+                
                 <div class="card-name">SOL Momentum</div>
-                <div class="card-asset">crypto</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-crypto_sol" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 1d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_crypto_ada.html" class="card ">
-                <div class="card-rank">#10</div>
+            <a href="profile_crypto_ada.html" 
+               class="card "
+               data-asset="crypto"
+               data-name="ada momentum"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#6</div>
+                    <span class="card-asset crypto">crypto</span>
+                </div>
+                
                 <div class="card-name">ADA Momentum</div>
-                <div class="card-asset">crypto</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-crypto_ada" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 1d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_crypto_doge.html" class="card ">
-                <div class="card-rank">#11</div>
+            <a href="profile_crypto_doge.html" 
+               class="card "
+               data-asset="crypto"
+               data-name="doge momentum"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#7</div>
+                    <span class="card-asset crypto">crypto</span>
+                </div>
+                
                 <div class="card-name">DOGE Momentum</div>
-                <div class="card-asset">crypto</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-crypto_doge" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 1d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_rsi_oversold_mega.html" class="card ">
-                <div class="card-rank">#12</div>
+            <a href="profile_rsi_oversold_mega.html" 
+               class="card "
+               data-asset="stock"
+               data-name="rsi oversold (mega)"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#8</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">RSI Oversold (Mega)</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-rsi_oversold_mega" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_rsi_oversold_growth.html" class="card ">
-                <div class="card-rank">#13</div>
+            <a href="profile_rsi_oversold_growth.html" 
+               class="card "
+               data-asset="stock"
+               data-name="rsi oversold (growth)"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#9</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">RSI Oversold (Growth)</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-rsi_oversold_growth" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_macd_cross_mega.html" class="card ">
-                <div class="card-rank">#14</div>
+            <a href="profile_macd_cross_mega.html" 
+               class="card "
+               data-asset="stock"
+               data-name="macd cross (mega)"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#10</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">MACD Cross (Mega)</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-macd_cross_mega" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_macd_cross_growth.html" class="card ">
-                <div class="card-rank">#15</div>
+            <a href="profile_macd_cross_growth.html" 
+               class="card "
+               data-asset="stock"
+               data-name="macd cross (growth)"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#11</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">MACD Cross (Growth)</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-macd_cross_growth" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_macd_cross_etf.html" class="card ">
-                <div class="card-rank">#16</div>
+            <a href="profile_macd_cross_etf.html" 
+               class="card "
+               data-asset="etf"
+               data-name="macd cross (etfs)"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#12</div>
+                    <span class="card-asset etf">etf</span>
+                </div>
+                
                 <div class="card-name">MACD Cross (ETFs)</div>
-                <div class="card-asset">etf</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-macd_cross_etf" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_bband_bounce_mega.html" class="card ">
-                <div class="card-rank">#17</div>
+            <a href="profile_bband_bounce_mega.html" 
+               class="card "
+               data-asset="stock"
+               data-name="bb bounce (mega)"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#13</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">BB Bounce (Mega)</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-bband_bounce_mega" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_bband_bounce_etf.html" class="card ">
-                <div class="card-rank">#18</div>
+            <a href="profile_bband_bounce_etf.html" 
+               class="card "
+               data-asset="etf"
+               data-name="bb bounce (etfs)"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#14</div>
+                    <span class="card-asset etf">etf</span>
+                </div>
+                
                 <div class="card-name">BB Bounce (ETFs)</div>
-                <div class="card-asset">etf</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-bband_bounce_etf" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_golden_cross_mega.html" class="card ">
-                <div class="card-rank">#19</div>
+            <a href="profile_golden_cross_mega.html" 
+               class="card "
+               data-asset="stock"
+               data-name="golden cross (mega)"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#15</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">Golden Cross (Mega)</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-golden_cross_mega" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_w52_low_mega.html" class="card ">
-                <div class="card-rank">#20</div>
+            <a href="profile_w52_low_mega.html" 
+               class="card "
+               data-asset="stock"
+               data-name="52w low buy (mega)"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#16</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">52W Low Buy (Mega)</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-w52_low_mega" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_rsi_bb_combo_mega.html" class="card ">
-                <div class="card-rank">#21</div>
+            <a href="profile_rsi_bb_combo_mega.html" 
+               class="card "
+               data-asset="stock"
+               data-name="rsi+bb combo (mega)"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#17</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">RSI+BB Combo (Mega)</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$10,000</div>
-                <div class="card-return">0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-rsi_bb_combo_mega" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$10,000</div>
+                    <div class="card-return">0.0%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 0</span>
-                    <span>Closed: 0</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 0
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_cluster_2.html" class="card negative">
-                <div class="card-rank">#22</div>
+            <a href="profile_score_60.html" 
+               class="card negative"
+               data-asset="stock"
+               data-name="score >=60"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#18</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
+                <div class="card-name">Score >=60</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-score_60" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$9,998</div>
+                    <div class="card-return">-0.0%</div>
+                </div>
+                
+                <div class="card-details">
+                    <div class="card-detail-item">
+                        <span>Active:</span> 12
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 3
+                    </div>
+                    
+                    <div class="card-detail-item">
+                        <span>Win Rate:</span> 0%
+                    </div>
+                    
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
+                </div>
+            </a>
+            
+            <a href="profile_congress_all.html" 
+               class="card negative"
+               data-asset="stock"
+               data-name="congress >$15k"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#19</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
+                <div class="card-name">Congress >$15k</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-congress_all" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$9,998</div>
+                    <div class="card-return">-0.0%</div>
+                </div>
+                
+                <div class="card-details">
+                    <div class="card-detail-item">
+                        <span>Active:</span> 4
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
+                    
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
+                </div>
+            </a>
+            
+            <a href="profile_congress_large.html" 
+               class="card negative"
+               data-asset="stock"
+               data-name="congress >$50k"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#20</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
+                <div class="card-name">Congress >$50k</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-congress_large" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$9,971</div>
+                    <div class="card-return">-0.3%</div>
+                </div>
+                
+                <div class="card-details">
+                    <div class="card-detail-item">
+                        <span>Active:</span> 3
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
+                    
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
+                </div>
+            </a>
+            
+            <a href="profile_spy_benchmark.html" 
+               class="card negative"
+               data-asset="etf"
+               data-name="spy buy & hold"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#21</div>
+                    <span class="card-asset etf">etf</span>
+                </div>
+                
+                <div class="card-name">SPY Buy & Hold</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-spy_benchmark" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$9,951</div>
+                    <div class="card-return">-0.5%</div>
+                </div>
+                
+                <div class="card-details">
+                    <div class="card-detail-item">
+                        <span>Active:</span> 1
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 0
+                    </div>
+                    
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
+                </div>
+            </a>
+            
+            <a href="profile_cluster_2.html" 
+               class="card negative"
+               data-asset="stock"
+               data-name="cluster 2+"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#22</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">Cluster 2+</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$9,998</div>
-                <div class="card-return">-0.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-cluster_2" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$9,938</div>
+                    <div class="card-return">-0.6%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 10</span>
-                    <span>Closed: 4</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 10
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 4
+                    </div>
                     
-                    <span>WR: 25%</span>
+                    <div class="card-detail-item">
+                        <span>Win Rate:</span> 25%
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_ceo_any.html" class="card negative">
-                <div class="card-rank">#23</div>
+            <a href="profile_ceo_any.html" 
+               class="card negative"
+               data-asset="stock"
+               data-name="ceo/cfo"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#23</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">CEO/CFO</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$9,846</div>
-                <div class="card-return">-1.5%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-ceo_any" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$9,736</div>
+                    <div class="card-return">-2.6%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 10</span>
-                    <span>Closed: 4</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 10
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 3
+                    </div>
                     
-                    <span>WR: 25%</span>
+                    <div class="card-detail-item">
+                        <span>Win Rate:</span> 0%
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_value_500k.html" class="card negative">
-                <div class="card-rank">#24</div>
+            <a href="profile_value_500k.html" 
+               class="card negative"
+               data-asset="stock"
+               data-name="value >$500k"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#24</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">Value >$500k</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$9,795</div>
-                <div class="card-return">-2.0%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-value_500k" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$9,693</div>
+                    <div class="card-return">-3.1%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 8</span>
-                    <span>Closed: 3</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 7
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 4
+                    </div>
                     
-                    <span>WR: 0%</span>
+                    <div class="card-detail-item">
+                        <span>Win Rate:</span> 0%
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
-            <a href="profile_score_80.html" class="card negative">
-                <div class="card-rank">#25</div>
+            <a href="profile_score_80.html" 
+               class="card negative"
+               data-asset="stock"
+               data-name="score >=80"
+               data-profitable="false">
+                <div class="card-header">
+                    <div class="card-rank ">#25</div>
+                    <span class="card-asset stock">stock</span>
+                </div>
+                
                 <div class="card-name">Score >=80</div>
-                <div class="card-asset">stock</div>
-                <div class="card-value">$9,712</div>
-                <div class="card-return">-2.9%</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-score_80" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">$9,661</div>
+                    <div class="card-return">-3.4%</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: 8</span>
-                    <span>Closed: 2</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> 8
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> 2
+                    </div>
                     
-                    <span>WR: 0%</span>
+                    <div class="card-detail-item">
+                        <span>Win Rate:</span> 0%
+                    </div>
                     
+                    <div class="card-detail-item">
+                        <span>Days:</span> 0d
+                    </div>
                 </div>
             </a>
             
@@ -360,7 +1004,7 @@
         <section class="chart-section">
             <h2>Return Curves</h2>
             
-            <div class="chart-container">
+            <div class="chart-container large">
                 <canvas id="returnChart"></canvas>
             </div>
             
@@ -368,7 +1012,7 @@
 
         <!-- Leaderboard Table -->
         <section class="table-section">
-            <h2>Leaderboard</h2>
+            <h2>📋 Full Leaderboard</h2>
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -379,7 +1023,7 @@
                             <th>Total Value</th>
                             <th>Return</th>
                             <th>Active</th>
-                            <th>Closed</th>
+                            <th>W/L</th>
                             <th>Win Rate</th>
                             <th>Days</th>
                             <th>Last Signal</th>
@@ -389,353 +1033,353 @@
                     <tbody>
                         
                         <tr>
-                            <td>1</td>
+                            <td><strong>1</strong></td>
                             <td><a href="profile_score_70.html">Score >=70</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$10,160</td>
-                            <td class="positive">+1.6%</td>
+                            <td style="font-family: var(--font-mono);">$10,089</td>
+                            <td class="positive" style="font-family: var(--font-mono); font-weight: 600;">+0.9%</td>
                             <td>9</td>
-                            <td>6</td>
-                            <td>33%</td>
+                            <td>1W / 4L</td>
+                            <td>20%</td>
                             <td>0d</td>
                             <td>2026-03-04</td>
-                            <td>openinsider</td>
+                            <td style="color: var(--text-muted);">openinsider</td>
                         </tr>
                         
                         <tr>
-                            <td>2</td>
-                            <td><a href="profile_congress_all.html">Congress >$15k</a></td>
-                            <td><span class="badge badge-stock">stock</span></td>
-                            <td>$10,082</td>
-                            <td class="positive">+0.8%</td>
-                            <td>4</td>
-                            <td>0</td>
-                            <td>-</td>
-                            <td>0d</td>
-                            <td>2026-03-04</td>
-                            <td>congress</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>3</td>
+                            <td><strong>2</strong></td>
                             <td><a href="profile_sector_rotation.html">Sector Rotation</a></td>
                             <td><span class="badge badge-etf">etf</span></td>
-                            <td>$10,076</td>
-                            <td class="positive">+0.8%</td>
+                            <td style="font-family: var(--font-mono);">$10,014</td>
+                            <td class="positive" style="font-family: var(--font-mono); font-weight: 600;">+0.1%</td>
                             <td>3</td>
-                            <td>0</td>
-                            <td>-</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
                             <td>0d</td>
                             <td>2026-03-04</td>
-                            <td>none</td>
+                            <td style="color: var(--text-muted);">none</td>
                         </tr>
                         
                         <tr>
-                            <td>4</td>
-                            <td><a href="profile_score_60.html">Score >=60</a></td>
-                            <td><span class="badge badge-stock">stock</span></td>
-                            <td>$10,055</td>
-                            <td class="positive">+0.6%</td>
-                            <td>12</td>
-                            <td>3</td>
-                            <td>0%</td>
-                            <td>0d</td>
-                            <td>-</td>
-                            <td>openinsider</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>5</td>
-                            <td><a href="profile_spy_benchmark.html">SPY Buy & Hold</a></td>
-                            <td><span class="badge badge-etf">etf</span></td>
-                            <td>$10,046</td>
-                            <td class="positive">+0.5%</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>-</td>
-                            <td>0d</td>
-                            <td>2026-03-04</td>
-                            <td>none</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>6</td>
-                            <td><a href="profile_congress_large.html">Congress >$50k</a></td>
-                            <td><span class="badge badge-stock">stock</span></td>
-                            <td>$10,028</td>
-                            <td class="positive">+0.3%</td>
-                            <td>3</td>
-                            <td>0</td>
-                            <td>-</td>
-                            <td>0d</td>
-                            <td>2026-03-04</td>
-                            <td>congress</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>7</td>
+                            <td><strong>3</strong></td>
                             <td><a href="profile_crypto_btc.html">BTC Momentum</a></td>
                             <td><span class="badge badge-crypto">crypto</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
+                            <td>1d</td>
                             <td>-</td>
-                            <td>0d</td>
-                            <td>-</td>
-                            <td>coingecko</td>
+                            <td style="color: var(--text-muted);">coingecko</td>
                         </tr>
                         
                         <tr>
-                            <td>8</td>
+                            <td><strong>4</strong></td>
                             <td><a href="profile_crypto_eth.html">ETH Momentum</a></td>
                             <td><span class="badge badge-crypto">crypto</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
+                            <td>1d</td>
                             <td>-</td>
-                            <td>0d</td>
-                            <td>-</td>
-                            <td>coingecko</td>
+                            <td style="color: var(--text-muted);">coingecko</td>
                         </tr>
                         
                         <tr>
-                            <td>9</td>
+                            <td><strong>5</strong></td>
                             <td><a href="profile_crypto_sol.html">SOL Momentum</a></td>
                             <td><span class="badge badge-crypto">crypto</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
+                            <td>1d</td>
                             <td>-</td>
-                            <td>0d</td>
-                            <td>-</td>
-                            <td>coingecko</td>
+                            <td style="color: var(--text-muted);">coingecko</td>
                         </tr>
                         
                         <tr>
-                            <td>10</td>
+                            <td><strong>6</strong></td>
                             <td><a href="profile_crypto_ada.html">ADA Momentum</a></td>
                             <td><span class="badge badge-crypto">crypto</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
+                            <td>1d</td>
                             <td>-</td>
-                            <td>0d</td>
-                            <td>-</td>
-                            <td>coingecko</td>
+                            <td style="color: var(--text-muted);">coingecko</td>
                         </tr>
                         
                         <tr>
-                            <td>11</td>
+                            <td><strong>7</strong></td>
                             <td><a href="profile_crypto_doge.html">DOGE Momentum</a></td>
                             <td><span class="badge badge-crypto">crypto</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
+                            <td>1d</td>
                             <td>-</td>
-                            <td>0d</td>
-                            <td>-</td>
-                            <td>coingecko</td>
+                            <td style="color: var(--text-muted);">coingecko</td>
                         </tr>
                         
                         <tr>
-                            <td>12</td>
+                            <td><strong>8</strong></td>
                             <td><a href="profile_rsi_oversold_mega.html">RSI Oversold (Mega)</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>-</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>market_scanner</td>
+                            <td style="color: var(--text-muted);">market_scanner</td>
                         </tr>
                         
                         <tr>
-                            <td>13</td>
+                            <td><strong>9</strong></td>
                             <td><a href="profile_rsi_oversold_growth.html">RSI Oversold (Growth)</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>-</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>market_scanner</td>
+                            <td style="color: var(--text-muted);">market_scanner</td>
                         </tr>
                         
                         <tr>
-                            <td>14</td>
+                            <td><strong>10</strong></td>
                             <td><a href="profile_macd_cross_mega.html">MACD Cross (Mega)</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>-</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>market_scanner</td>
+                            <td style="color: var(--text-muted);">market_scanner</td>
                         </tr>
                         
                         <tr>
-                            <td>15</td>
+                            <td><strong>11</strong></td>
                             <td><a href="profile_macd_cross_growth.html">MACD Cross (Growth)</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>-</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>market_scanner</td>
+                            <td style="color: var(--text-muted);">market_scanner</td>
                         </tr>
                         
                         <tr>
-                            <td>16</td>
+                            <td><strong>12</strong></td>
                             <td><a href="profile_macd_cross_etf.html">MACD Cross (ETFs)</a></td>
                             <td><span class="badge badge-etf">etf</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>-</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>market_scanner</td>
+                            <td style="color: var(--text-muted);">market_scanner</td>
                         </tr>
                         
                         <tr>
-                            <td>17</td>
+                            <td><strong>13</strong></td>
                             <td><a href="profile_bband_bounce_mega.html">BB Bounce (Mega)</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>-</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>market_scanner</td>
+                            <td style="color: var(--text-muted);">market_scanner</td>
                         </tr>
                         
                         <tr>
-                            <td>18</td>
+                            <td><strong>14</strong></td>
                             <td><a href="profile_bband_bounce_etf.html">BB Bounce (ETFs)</a></td>
                             <td><span class="badge badge-etf">etf</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>-</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>market_scanner</td>
+                            <td style="color: var(--text-muted);">market_scanner</td>
                         </tr>
                         
                         <tr>
-                            <td>19</td>
+                            <td><strong>15</strong></td>
                             <td><a href="profile_golden_cross_mega.html">Golden Cross (Mega)</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>-</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>market_scanner</td>
+                            <td style="color: var(--text-muted);">market_scanner</td>
                         </tr>
                         
                         <tr>
-                            <td>20</td>
+                            <td><strong>16</strong></td>
                             <td><a href="profile_w52_low_mega.html">52W Low Buy (Mega)</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>-</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>market_scanner</td>
+                            <td style="color: var(--text-muted);">market_scanner</td>
                         </tr>
                         
                         <tr>
-                            <td>21</td>
+                            <td><strong>17</strong></td>
                             <td><a href="profile_rsi_bb_combo_mega.html">RSI+BB Combo (Mega)</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$10,000</td>
-                            <td class="negative">0.0%</td>
+                            <td style="font-family: var(--font-mono);">$10,000</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">0.0%</td>
                             <td>0</td>
-                            <td>0</td>
-                            <td>-</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>market_scanner</td>
+                            <td style="color: var(--text-muted);">market_scanner</td>
                         </tr>
                         
                         <tr>
-                            <td>22</td>
+                            <td><strong>18</strong></td>
+                            <td><a href="profile_score_60.html">Score >=60</a></td>
+                            <td><span class="badge badge-stock">stock</span></td>
+                            <td style="font-family: var(--font-mono);">$9,998</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">-0.0%</td>
+                            <td>12</td>
+                            <td>0W / 3L</td>
+                            <td>0%</td>
+                            <td>0d</td>
+                            <td>-</td>
+                            <td style="color: var(--text-muted);">openinsider</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>19</strong></td>
+                            <td><a href="profile_congress_all.html">Congress >$15k</a></td>
+                            <td><span class="badge badge-stock">stock</span></td>
+                            <td style="font-family: var(--font-mono);">$9,998</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">-0.0%</td>
+                            <td>4</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
+                            <td>0d</td>
+                            <td>2026-03-04</td>
+                            <td style="color: var(--text-muted);">congress</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>20</strong></td>
+                            <td><a href="profile_congress_large.html">Congress >$50k</a></td>
+                            <td><span class="badge badge-stock">stock</span></td>
+                            <td style="font-family: var(--font-mono);">$9,971</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">-0.3%</td>
+                            <td>3</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
+                            <td>0d</td>
+                            <td>2026-03-04</td>
+                            <td style="color: var(--text-muted);">congress</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>21</strong></td>
+                            <td><a href="profile_spy_benchmark.html">SPY Buy & Hold</a></td>
+                            <td><span class="badge badge-etf">etf</span></td>
+                            <td style="font-family: var(--font-mono);">$9,951</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">-0.5%</td>
+                            <td>1</td>
+                            <td>0W / 0L</td>
+                            <td>—</td>
+                            <td>0d</td>
+                            <td>2026-03-04</td>
+                            <td style="color: var(--text-muted);">none</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>22</strong></td>
                             <td><a href="profile_cluster_2.html">Cluster 2+</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$9,998</td>
-                            <td class="negative">-0.0%</td>
+                            <td style="font-family: var(--font-mono);">$9,938</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">-0.6%</td>
                             <td>10</td>
-                            <td>4</td>
+                            <td>1W / 3L</td>
                             <td>25%</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>openinsider</td>
+                            <td style="color: var(--text-muted);">openinsider</td>
                         </tr>
                         
                         <tr>
-                            <td>23</td>
+                            <td><strong>23</strong></td>
                             <td><a href="profile_ceo_any.html">CEO/CFO</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$9,846</td>
-                            <td class="negative">-1.5%</td>
+                            <td style="font-family: var(--font-mono);">$9,736</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">-2.6%</td>
                             <td>10</td>
-                            <td>4</td>
-                            <td>25%</td>
+                            <td>0W / 3L</td>
+                            <td>0%</td>
                             <td>0d</td>
-                            <td>2026-03-05</td>
-                            <td>openinsider</td>
+                            <td>-</td>
+                            <td style="color: var(--text-muted);">openinsider</td>
                         </tr>
                         
                         <tr>
-                            <td>24</td>
+                            <td><strong>24</strong></td>
                             <td><a href="profile_value_500k.html">Value >$500k</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$9,795</td>
-                            <td class="negative">-2.0%</td>
-                            <td>8</td>
-                            <td>3</td>
+                            <td style="font-family: var(--font-mono);">$9,693</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">-3.1%</td>
+                            <td>7</td>
+                            <td>0W / 4L</td>
                             <td>0%</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>openinsider</td>
+                            <td style="color: var(--text-muted);">openinsider</td>
                         </tr>
                         
                         <tr>
-                            <td>25</td>
+                            <td><strong>25</strong></td>
                             <td><a href="profile_score_80.html">Score >=80</a></td>
                             <td><span class="badge badge-stock">stock</span></td>
-                            <td>$9,712</td>
-                            <td class="negative">-2.9%</td>
+                            <td style="font-family: var(--font-mono);">$9,661</td>
+                            <td class="negative" style="font-family: var(--font-mono); font-weight: 600;">-3.4%</td>
                             <td>8</td>
-                            <td>2</td>
+                            <td>0W / 2L</td>
                             <td>0%</td>
                             <td>0d</td>
                             <td>-</td>
-                            <td>openinsider</td>
+                            <td style="color: var(--text-muted);">openinsider</td>
                         </tr>
                         
                     </tbody>
@@ -751,47 +1395,200 @@
     </main>
 
     <footer>
-        <p>Paper trading only. No real money at risk. Auto-optimizer runs every Friday.</p>
+        <p>📌 Paper trading simulation only. No real money at risk.<br>
+        Auto-optimizer runs every Friday to adjust strategy mix based on performance.</p>
     </footer>
 
     <script>
-    const chartData = {"labels": ["2026-03-03", "2026-03-04", "2026-03-05"], "datasets": [{"label": "BB Bounce (ETFs)", "data": [null, 0.0, 0.0], "borderColor": "#3498db", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "BB Bounce (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#e74c3c", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "CEO/CFO", "data": [-2.729357000000018, -1.9972646800000078, -1.539063930000011], "borderColor": "#2ecc71", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Cluster 2+", "data": [-0.5352800000000207, 0.4403600000000006, -0.015390000000006695], "borderColor": "#f39c12", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Congress >$15k", "data": [0.0, 0.8253999999999906, 0.8190399999999863], "borderColor": "#9b59b6", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Congress >$50k", "data": [0.0, 0.34894999999998616, 0.2834599999999773], "borderColor": "#1abc9c", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "ADA Momentum", "data": [null, 0.0, 0.0], "borderColor": "#e67e22", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "BTC Momentum", "data": [0.0, 0.0, 0.0], "borderColor": "#34495e", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "DOGE Momentum", "data": [null, 0.0, 0.0], "borderColor": "#16a085", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "ETH Momentum", "data": [0.0, 0.0, 0.0], "borderColor": "#c0392b", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "SOL Momentum", "data": [null, 0.0, 0.0], "borderColor": "#2980b9", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Golden Cross (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#d35400", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "MACD Cross (ETFs)", "data": [null, 0.0, 0.0], "borderColor": "#27ae60", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "MACD Cross (Growth)", "data": [null, 0.0, 0.0], "borderColor": "#8e44ad", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "MACD Cross (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#f1c40f", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "RSI+BB Combo (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#e91e63", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "RSI Oversold (Growth)", "data": [null, 0.0, 0.0], "borderColor": "#00bcd4", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "RSI Oversold (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#ff9800", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Score >=60", "data": [-1.0956500000000233, 0.792649999999976, 0.5542999999999848], "borderColor": "#4caf50", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Score >=70", "data": [0.7639800000000104, 1.3805660100000023, 1.5964798100000006], "borderColor": "#673ab7", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Score >=80", "data": [-3.7388300000000165, -3.5194800000000215, -2.876030000000028], "borderColor": "#009688", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Sector Rotation", "data": [0.0, 0.5849499999999899, 0.7638499999999839], "borderColor": "#ff5722", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "SPY Buy & Hold", "data": [0.0, 0.7917000000000007, 0.45639999999999414], "borderColor": "#888888", "borderDash": [5, 5], "borderWidth": 2, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Value >$500k", "data": [-1.232579999999998, -1.159400000000005, -2.0472000000000117], "borderColor": "#795548", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "52W Low Buy (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#cddc39", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}]};
+    // Chart.js default configuration
+    Chart.defaults.color = '#8b97a8';
+    Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    
+    // Return Curves Chart
+    const chartData = {"labels": ["2026-03-03", "2026-03-04", "2026-03-05"], "datasets": [{"label": "BB Bounce (ETFs)", "data": [null, 0.0, 0.0], "borderColor": "#3498db", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "BB Bounce (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#e74c3c", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "CEO/CFO", "data": [-2.729357000000018, -2.9160850000000025, -2.6446650000000043], "borderColor": "#2ecc71", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Cluster 2+", "data": [-0.5352800000000207, -0.06289000000000669, -0.6232300000000032], "borderColor": "#f39c12", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Congress >$15k", "data": [0.0, -0.2780000000000109, -0.021340000000018334], "borderColor": "#9b59b6", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Congress >$50k", "data": [0.0, -0.2085000000000218, -0.2852400000000125], "borderColor": "#1abc9c", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "ADA Momentum", "data": [null, 0.0, null], "borderColor": "#e67e22", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "BTC Momentum", "data": [0.0, 0.0, null], "borderColor": "#34495e", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "DOGE Momentum", "data": [null, 0.0, null], "borderColor": "#16a085", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "ETH Momentum", "data": [0.0, 0.0, null], "borderColor": "#c0392b", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "SOL Momentum", "data": [null, 0.0, null], "borderColor": "#2980b9", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Golden Cross (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#d35400", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "MACD Cross (ETFs)", "data": [null, 0.0, 0.0], "borderColor": "#27ae60", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "MACD Cross (Growth)", "data": [null, 0.0, 0.0], "borderColor": "#8e44ad", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "MACD Cross (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#f1c40f", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "RSI+BB Combo (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#e91e63", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "RSI Oversold (Growth)", "data": [null, 0.0, 0.0], "borderColor": "#00bcd4", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "RSI Oversold (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#ff9800", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Score >=60", "data": [-1.0956500000000233, -0.31440000000002327, -0.018880000000008296], "borderColor": "#4caf50", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Score >=70", "data": [0.7639800000000104, 0.9154000000000088, 0.8925857000000178], "borderColor": "#673ab7", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Score >=80", "data": [-3.7388300000000165, -3.7350800000000164, -3.3914800000000107], "borderColor": "#009688", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Sector Rotation", "data": [0.0, 0.0, 0.13754999999999198], "borderColor": "#ff5722", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "SPY Buy & Hold", "data": [0.0, 0.0, -0.4928000000000065], "borderColor": "#888888", "borderDash": [5, 5], "borderWidth": 2, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Value >$500k", "data": [-1.232579999999998, -1.6295000000000073, -3.0718171599999913], "borderColor": "#795548", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "52W Low Buy (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#cddc39", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}]};
     if (chartData.labels.length > 0) {
-        new Chart(document.getElementById('returnChart'), {
+        const ctx = document.getElementById('returnChart').getContext('2d');
+        
+        // Enhanced gradient for each dataset
+        chartData.datasets.forEach((dataset, index) => {
+            const color = dataset.borderColor;
+            // Create subtle fill gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, color.replace(')', ', 0.1)').replace('rgb', 'rgba'));
+            gradient.addColorStop(1, 'transparent');
+            dataset.backgroundColor = gradient;
+            dataset.fill = index === 0; // Only fill the top performer
+        });
+        
+        new Chart(ctx, {
             type: 'line',
             data: chartData,
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
+                interaction: { 
+                    mode: 'index', 
+                    intersect: false 
+                },
                 plugins: {
                     legend: {
-                        labels: { color: '#ccc', font: { size: 12 } }
+                        position: 'top',
+                        align: 'start',
+                        labels: { 
+                            color: '#8b97a8', 
+                            font: { size: 11 },
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
                     },
                     tooltip: {
+                        backgroundColor: 'rgba(10, 14, 20, 0.95)',
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 1,
+                        padding: 12,
+                        titleFont: { size: 13, weight: 600 },
+                        bodyFont: { size: 12 },
                         callbacks: {
                             label: function(ctx) {
-                                return ctx.dataset.label + ': ' + (ctx.parsed.y != null ? ctx.parsed.y.toFixed(1) + '%' : 'N/A');
+                                const value = ctx.parsed.y;
+                                const sign = value >= 0 ? '+' : '';
+                                return ctx.dataset.label + ': ' + sign + value.toFixed(2) + '%';
                             }
                         }
                     }
                 },
                 scales: {
                     x: {
-                        ticks: { color: '#888', maxTicksLimit: 15 },
-                        grid: { color: '#333' }
+                        ticks: { 
+                            color: '#5c6773', 
+                            maxTicksLimit: 12,
+                            font: { size: 11 }
+                        },
+                        grid: { 
+                            color: 'rgba(255, 255, 255, 0.04)',
+                            drawBorder: false
+                        }
                     },
                     y: {
                         ticks: {
-                            color: '#888',
-                            callback: function(v) { return v.toFixed(1) + '%'; }
+                            color: '#5c6773',
+                            font: { size: 11 },
+                            callback: function(v) { 
+                                return (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; 
+                            }
                         },
-                        grid: { color: '#333' }
+                        grid: { 
+                            color: 'rgba(255, 255, 255, 0.04)',
+                            drawBorder: false
+                        }
                     }
                 }
             }
         });
     }
+    
+    // Mini Sparkline Charts for Cards
+    const sparklineData = {"labels": ["2026-03-03", "2026-03-04", "2026-03-05"], "datasets": [{"label": "BB Bounce (ETFs)", "data": [null, 0.0, 0.0], "borderColor": "#3498db", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "BB Bounce (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#e74c3c", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "CEO/CFO", "data": [-2.729357000000018, -2.9160850000000025, -2.6446650000000043], "borderColor": "#2ecc71", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Cluster 2+", "data": [-0.5352800000000207, -0.06289000000000669, -0.6232300000000032], "borderColor": "#f39c12", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Congress >$15k", "data": [0.0, -0.2780000000000109, -0.021340000000018334], "borderColor": "#9b59b6", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Congress >$50k", "data": [0.0, -0.2085000000000218, -0.2852400000000125], "borderColor": "#1abc9c", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "ADA Momentum", "data": [null, 0.0, null], "borderColor": "#e67e22", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "BTC Momentum", "data": [0.0, 0.0, null], "borderColor": "#34495e", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "DOGE Momentum", "data": [null, 0.0, null], "borderColor": "#16a085", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "ETH Momentum", "data": [0.0, 0.0, null], "borderColor": "#c0392b", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "SOL Momentum", "data": [null, 0.0, null], "borderColor": "#2980b9", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Golden Cross (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#d35400", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "MACD Cross (ETFs)", "data": [null, 0.0, 0.0], "borderColor": "#27ae60", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "MACD Cross (Growth)", "data": [null, 0.0, 0.0], "borderColor": "#8e44ad", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "MACD Cross (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#f1c40f", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "RSI+BB Combo (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#e91e63", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "RSI Oversold (Growth)", "data": [null, 0.0, 0.0], "borderColor": "#00bcd4", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "RSI Oversold (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#ff9800", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Score >=60", "data": [-1.0956500000000233, -0.31440000000002327, -0.018880000000008296], "borderColor": "#4caf50", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Score >=70", "data": [0.7639800000000104, 0.9154000000000088, 0.8925857000000178], "borderColor": "#673ab7", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Score >=80", "data": [-3.7388300000000165, -3.7350800000000164, -3.3914800000000107], "borderColor": "#009688", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Sector Rotation", "data": [0.0, 0.0, 0.13754999999999198], "borderColor": "#ff5722", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "SPY Buy & Hold", "data": [0.0, 0.0, -0.4928000000000065], "borderColor": "#888888", "borderDash": [5, 5], "borderWidth": 2, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "Value >$500k", "data": [-1.232579999999998, -1.6295000000000073, -3.0718171599999913], "borderColor": "#795548", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}, {"label": "52W Low Buy (Mega)", "data": [null, 0.0, 0.0], "borderColor": "#cddc39", "borderDash": [], "borderWidth": 2.5, "fill": false, "tension": 0.3, "pointRadius": 0}]};
+    if (sparklineData.labels.length > 0) {
+        sparklineData.datasets.forEach(dataset => {
+            const profileId = dataset.label.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const canvas = document.querySelector(`[id^="spark-"][id*="${profileId}"]`) || 
+                           document.getElementById('spark-' + profileId);
+            
+            // Try to match by display name pattern
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const cardName = card.querySelector('.card-name')?.textContent;
+                if (cardName === dataset.label) {
+                    const sparkCanvas = card.querySelector('.card-sparkline canvas');
+                    if (sparkCanvas && dataset.data.filter(d => d !== null).length > 1) {
+                        const ctx = sparkCanvas.getContext('2d');
+                        const data = dataset.data.filter(d => d !== null);
+                        const lastValue = data[data.length - 1];
+                        const color = lastValue >= 0 ? '#10b981' : '#ef4444';
+                        
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: data.map((_, i) => i),
+                                datasets: [{
+                                    data: data,
+                                    borderColor: color,
+                                    borderWidth: 2,
+                                    fill: true,
+                                    backgroundColor: (context) => {
+                                        const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, 40);
+                                        gradient.addColorStop(0, color.replace(')', ', 0.3)').replace('#', 'rgba(').replace(/([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i, (_, r, g, b) => `${parseInt(r, 16)}, ${parseInt(g, 16)}, ${parseInt(b, 16)}`));
+                                        gradient.addColorStop(1, 'transparent');
+                                        return gradient;
+                                    },
+                                    tension: 0.4,
+                                    pointRadius: 0
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                                scales: {
+                                    x: { display: false },
+                                    y: { display: false }
+                                },
+                                elements: {
+                                    line: { borderCapStyle: 'round' }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    }
+    
+    // Filter Functionality
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.card');
+    const searchInput = document.getElementById('searchInput');
+    
+    function filterCards() {
+        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+        const searchTerm = searchInput.value.toLowerCase();
+        
+        cards.forEach(card => {
+            const asset = card.dataset.asset;
+            const name = card.dataset.name;
+            const profitable = card.dataset.profitable === 'true';
+            
+            let show = true;
+            
+            // Asset type filter
+            if (activeFilter !== 'all') {
+                if (activeFilter === 'profitable') {
+                    show = profitable;
+                } else {
+                    show = asset === activeFilter;
+                }
+            }
+            
+            // Search filter
+            if (show && searchTerm) {
+                show = name.includes(searchTerm);
+            }
+            
+            card.style.display = show ? 'flex' : 'none';
+        });
+    }
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterCards();
+        });
+    });
+    
+    searchInput.addEventListener('input', filterCards);
     </script>
 </body>
 </html>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ profile.meta.display_name }} | Trading Simulation Lab</title>
-    <meta name="description" content="{{ profile.meta.description }}">
+    <title>SPY Buy & Hold | Trading Simulation Lab</title>
+    <meta name="description" content="Passive benchmark: buy SPY on day 1, hold forever. If no strategy beats this, just buy an index fund.">
     <link rel="stylesheet" href="static/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -213,23 +213,23 @@
     <header>
         <a href="index.html" class="back-link">Back to Lab</a>
         <div class="profile-badge">
-            <span class="asset-type">{{ profile.meta.asset_type }}</span>
-            <span>{{ profile.meta.data_source }}</span>
+            <span class="asset-type">etf</span>
+            <span>none</span>
         </div>
-        <h1 class="profile-title">{{ profile.meta.display_name }}</h1>
-        <p class="profile-description">{{ profile.meta.description }}</p>
+        <h1 class="profile-title">SPY Buy & Hold</h1>
+        <p class="profile-description">Passive benchmark: buy SPY on day 1, hold forever. If no strategy beats this, just buy an index fund.</p>
     </header>
 
     <main>
         <!-- Primary Stats -->
         <div class="stats-row">
             <div class="big-stat">
-                <div class="big-stat-value">{{ profile.portfolio.total | fmt_money }}</div>
+                <div class="big-stat-value">$10,000</div>
                 <div class="big-stat-label">Total Portfolio Value</div>
             </div>
-            <div class="big-stat {{ 'positive' if (profile.portfolio.return_pct or 0) > 0 else 'negative' }}">
-                <div class="big-stat-value {{ 'positive' if (profile.portfolio.return_pct or 0) > 0 else 'negative' }}">
-                    {{ (profile.portfolio.return_pct or 0) | fmt_pct }}
+            <div class="big-stat negative">
+                <div class="big-stat-value negative">
+                    0.0%
                 </div>
                 <div class="big-stat-label">Total Return</div>
             </div>
@@ -239,46 +239,46 @@
         <section class="metrics-grid">
             <div class="metric">
                 <div class="metric-label">Win Rate</div>
-                <div class="metric-value">{{ "%.0f" | format(profile.metrics.win_rate) }}%</div>
+                <div class="metric-value">0%</div>
                 <div class="perf-bar">
-                    <div class="perf-bar-fill positive" style="width: {{ profile.metrics.win_rate }}%;"></div>
+                    <div class="perf-bar-fill positive" style="width: 0%;"></div>
                 </div>
             </div>
             
             <div class="metric">
                 <div class="metric-label">Total Trades</div>
-                <div class="metric-value">{{ profile.metrics.total_closed }}</div>
+                <div class="metric-value">0</div>
                 <div class="metric-subtitle">closed positions</div>
             </div>
             
             <div class="metric positive">
                 <div class="metric-label">Avg Win</div>
-                <div class="metric-value positive">+{{ "%.1f" | format(profile.metrics.avg_win) }}%</div>
+                <div class="metric-value positive">+0.0%</div>
             </div>
             
             <div class="metric negative">
                 <div class="metric-label">Avg Loss</div>
-                <div class="metric-value negative">{{ "%.1f" | format(profile.metrics.avg_loss) }}%</div>
+                <div class="metric-value negative">0.0%</div>
             </div>
             
             <div class="metric positive">
                 <div class="metric-label">Best Trade</div>
-                <div class="metric-value positive">+{{ "%.1f" | format(profile.metrics.best_trade) }}%</div>
+                <div class="metric-value positive">+0.0%</div>
             </div>
             
             <div class="metric negative">
                 <div class="metric-label">Max Drawdown</div>
-                <div class="metric-value negative">{{ "%.1f" | format(profile.metrics.max_drawdown) }}%</div>
+                <div class="metric-value negative">0.0%</div>
             </div>
             
             <div class="metric">
                 <div class="metric-label">Cash Available</div>
-                <div class="metric-value">{{ profile.portfolio.cash | fmt_money }}</div>
+                <div class="metric-value">$475</div>
             </div>
             
             <div class="metric">
                 <div class="metric-label">Invested</div>
-                <div class="metric-value">{{ profile.portfolio.invested_value | fmt_money }}</div>
+                <div class="metric-value">$9,525</div>
             </div>
         </section>
 
@@ -286,52 +286,47 @@
         <section class="config-section">
             <h2>Strategy Configuration</h2>
             <div class="config-grid">
-                <span>Initial Capital: <strong>${{ "%.0f" | format(profile.meta.initial_capital) }}</strong></span>
-                <span>Position Size: <strong>{{ profile.meta.position_size_pct }}%</strong></span>
-                <span>Max Positions: <strong>{{ profile.meta.max_positions }}</strong></span>
-                <span>Stop Loss: <strong>-{{ profile.meta.stop_loss_pct }}%</strong></span>
-                <span>Take Profit: <strong>+{{ profile.meta.take_profit_pct }}%</strong></span>
-                <span>Max Hold: <strong>{{ profile.meta.max_holding_days }} days</strong></span>
+                <span>Initial Capital: <strong>$10000</strong></span>
+                <span>Position Size: <strong>99.0%</strong></span>
+                <span>Max Positions: <strong>1</strong></span>
+                <span>Stop Loss: <strong>--99.0%</strong></span>
+                <span>Take Profit: <strong>+999.0%</strong></span>
+                <span>Max Hold: <strong>99999 days</strong></span>
             </div>
         </section>
 
         <!-- Portfolio Value Chart -->
         <section class="chart-section">
             <h2>Portfolio Performance</h2>
-            {% if snapshots_json != '[]' %}
+            
             <div class="chart-container large">
                 <canvas id="valueChart"></canvas>
             </div>
-            {% else %}
-            <div class="no-data">
-                <p>Waiting for daily snapshots...</p>
-                <p>Performance chart will appear after 2-3 days of trading data.</p>
-            </div>
-            {% endif %}
+            
         </section>
 
         <!-- Active Positions -->
-        {% if profile.active_trades %}
+        
         <section class="table-section">
-            <h2>🟢 Active Positions ({{ profile.active_trades | length }})</h2>
+            <h2>🟢 Active Positions (1)</h2>
             
             <!-- Mobile Cards -->
-            {% for t in profile.active_trades %}
+            
             <div class="trade-card">
                 <div class="trade-card-header">
-                    <span class="trade-card-ticker">{{ t.ticker }}</span>
-                    <span class="trade-card-return {{ 'positive' if t.return_pct > 0 else 'negative' }}">
-                        {{ "%.1f" | format(t.return_pct) }}%
+                    <span class="trade-card-ticker">SPY</span>
+                    <span class="trade-card-return negative">
+                        0.0%
                     </span>
                 </div>
                 <div class="trade-card-details">
-                    <span>Entry: ${{ "%.2f" | format(t.entry_price) }}</span>
-                    <span>Current: ${{ "%.2f" | format(t.current_price) }}</span>
-                    <span>Days: {{ t.days }}</span>
-                    <span>Shares: {{ t.shares | fmt_shares }}</span>
+                    <span>Entry: $680.33</span>
+                    <span>Current: $680.33</span>
+                    <span>Days: 1</span>
+                    <span>Shares: 14</span>
                 </div>
             </div>
-            {% endfor %}
+            
             
             <!-- Desktop Table -->
             <div class="table-wrapper">
@@ -349,110 +344,45 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for t in profile.active_trades %}
+                        
                         <tr>
                             <td>
-                                <strong style="font-size: 1rem;">{{ t.ticker }}</strong>
+                                <strong style="font-size: 1rem;">SPY</strong>
                                 <span class="status-active" style="margin-left: 8px; font-size: 0.75rem;">LIVE</span>
                             </td>
-                            <td>{{ t.company[:30] }}{% if t.company | length > 30 %}...{% endif %}</td>
-                            <td style="font-family: var(--font-mono);">${{ "%.2f" | format(t.entry_price) }}</td>
-                            <td style="font-family: var(--font-mono);">${{ "%.2f" | format(t.current_price) }}</td>
+                            <td>SPDR S&P 500 ETF Trust</td>
+                            <td style="font-family: var(--font-mono);">$680.33</td>
+                            <td style="font-family: var(--font-mono);">$680.33</td>
                             <td>
-                                <span class="{{ 'positive' if t.return_pct > 0 else 'negative' }}" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
-                                    {{ "%+.1f" | format(t.return_pct) }}%
+                                <span class="negative" style="font-family: var(--font-mono); font-weight: 600; font-size: 1rem;">
+                                    +0.0%
                                 </span>
                                 <div class="perf-bar" style="width: 80px;">
-                                    <div class="perf-bar-fill {{ 'positive' if t.return_pct > 0 else 'negative' }}" 
-                                         style="width: {{ [100, (t.return_pct | abs) * 5] | min }}%;"></div>
+                                    <div class="perf-bar-fill negative" 
+                                         style="width: 0%;"></div>
                                 </div>
                             </td>
-                            <td>{{ t.days }}d</td>
-                            <td style="font-family: var(--font-mono);">{{ t.shares | fmt_shares }}</td>
-                            <td style="color: var(--text-muted); font-size: 0.85rem;">{{ t.insider[:25] if t.insider else '—' }}</td>
+                            <td>1d</td>
+                            <td style="font-family: var(--font-mono);">14</td>
+                            <td style="color: var(--text-muted); font-size: 0.85rem;">BENCHMARK</td>
                         </tr>
-                        {% endfor %}
+                        
                     </tbody>
                 </table>
             </div>
         </section>
-        {% endif %}
+        
 
         <!-- Closed Trades -->
-        {% if profile.closed_trades %}
-        <section class="table-section">
-            <h2>📊 Trade History ({{ profile.closed_trades | length }})</h2>
-            
-            <!-- Mobile Cards -->
-            {% for t in profile.closed_trades %}
-            <div class="trade-card">
-                <div class="trade-card-header">
-                    <span class="trade-card-ticker">{{ t.ticker }}</span>
-                    <span class="trade-card-return {{ 'positive' if t.return_pct > 0 else 'negative' }}">
-                        {{ "%+.1f" | format(t.return_pct) }}%
-                    </span>
-                </div>
-                <div class="trade-card-details">
-                    <span>Entry: ${{ "%.2f" | format(t.entry_price) }}</span>
-                    <span>Exit: ${{ "%.2f" | format(t.exit_price) }}</span>
-                    <span>Days: {{ t.days }}</span>
-                    <span>{{ t.exit_reason }}</span>
-                </div>
-            </div>
-            {% endfor %}
-            
-            <!-- Desktop Table -->
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Ticker</th>
-                            <th>Entry Price</th>
-                            <th>Exit Price</th>
-                            <th>Return</th>
-                            <th>Days Held</th>
-                            <th>Exit Reason</th>
-                            <th>Exit Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for t in profile.closed_trades %}
-                        <tr>
-                            <td><strong>{{ t.ticker }}</strong></td>
-                            <td style="font-family: var(--font-mono);">${{ "%.2f" | format(t.entry_price) }}</td>
-                            <td style="font-family: var(--font-mono);">${{ "%.2f" | format(t.exit_price) }}</td>
-                            <td>
-                                <span class="{{ 'positive' if t.return_pct > 0 else 'negative' }}" style="font-family: var(--font-mono); font-weight: 600;">
-                                    {{ "%+.1f" | format(t.return_pct) }}%
-                                </span>
-                            </td>
-                            <td>{{ t.days }}d</td>
-                            <td>
-                                <span class="badge badge-{{ t.exit_reason | lower }}">{{ t.exit_reason }}</span>
-                            </td>
-                            <td style="font-family: var(--font-mono); color: var(--text-muted);">{{ t.exit_date }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </section>
-        {% endif %}
+        
 
         <!-- No trades message -->
-        {% if not profile.active_trades and not profile.closed_trades %}
-        <section class="table-section">
-            <div class="no-data">
-                <p>No trades yet</p>
-                <p>This strategy is waiting for its first signal.</p>
-            </div>
-        </section>
-        {% endif %}
+        
     </main>
 
     <footer>
         <p>📌 Paper trading simulation only. No real money at risk.<br>
-        Last updated: {{ updated_at }}</p>
+        Last updated: 2026-03-05 12:17 UTC</p>
     </footer>
 
     <script>
@@ -460,7 +390,7 @@
     Chart.defaults.color = '#8b97a8';
     Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
     
-    const snapshots = {{ snapshots_json | safe }};
+    const snapshots = [{"date": "2026-03-03", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-04", "total": 10000.0, "cash": 475.3799999999992, "invested": 9524.62, "return_pct": 0.0}];
     
     if (snapshots.length > 0) {
         const ctx = document.getElementById('valueChart').getContext('2d');

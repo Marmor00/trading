@@ -4,31 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Simulation Lab</title>
+    <meta name="description" content="Paper trading simulation comparing {{ profile_count }} strategies in real-time market conditions">
     <link rel="stylesheet" href="static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <header>
-        <h1>Trading Simulation Lab</h1>
-        <p class="subtitle">{{ profile_count }} strategies competing | Paper trading | Updated: {{ updated_at }}</p>
+        <div class="logo">
+            <div class="logo-icon">📊</div>
+            <h1>Trading Simulation Lab</h1>
+        </div>
+        <p class="subtitle">
+            <span>{{ profile_count }} strategies</span> competing • Paper trading • Updated: {{ updated_at }}
+        </p>
     </header>
 
     <main>
-        <!-- Summary Cards -->
-        <section class="cards">
+        <!-- Hero Stats Section -->
+        <section class="hero-stats">
+            {% set best = leaderboard[0] if leaderboard else none %}
+            {% set worst = leaderboard[-1] if leaderboard else none %}
+            {% set total_value = leaderboard | sum(attribute='total') %}
+            {% set avg_return = (leaderboard | sum(attribute='return_pct')) / (leaderboard | length) if leaderboard else 0 %}
+            {% set total_active = leaderboard | sum(attribute='active') %}
+            {% set positive_count = leaderboard | selectattr('return_pct', 'gt', 0) | list | length %}
+            
+            <div class="hero-stat">
+                <div class="hero-stat-icon">💰</div>
+                <div class="hero-stat-label">Total Portfolio Value</div>
+                <div class="hero-stat-value">{{ total_value | fmt_money }}</div>
+                <div class="hero-stat-detail">Across {{ profile_count }} strategies</div>
+            </div>
+            
+            <div class="hero-stat positive">
+                <div class="hero-stat-icon">🏆</div>
+                <div class="hero-stat-label">Best Performer</div>
+                <div class="hero-stat-value">{% if best %}{{ best.return_pct | fmt_pct }}{% else %}N/A{% endif %}</div>
+                <div class="hero-stat-detail">{% if best %}{{ best.display_name }}{% endif %}</div>
+            </div>
+            
+            <div class="hero-stat negative">
+                <div class="hero-stat-icon">📉</div>
+                <div class="hero-stat-label">Worst Performer</div>
+                <div class="hero-stat-value">{% if worst %}{{ worst.return_pct | fmt_pct }}{% else %}N/A{% endif %}</div>
+                <div class="hero-stat-detail">{% if worst %}{{ worst.display_name }}{% endif %}</div>
+            </div>
+            
+            <div class="hero-stat">
+                <div class="hero-stat-icon">📈</div>
+                <div class="hero-stat-label">Active Positions</div>
+                <div class="hero-stat-value">{{ total_active }}</div>
+                <div class="hero-stat-detail">{{ positive_count }}/{{ profile_count }} profitable</div>
+            </div>
+        </section>
+
+        <!-- Filter Bar -->
+        <section class="filter-bar">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="stock">Stocks</button>
+            <button class="filter-btn" data-filter="crypto">Crypto</button>
+            <button class="filter-btn" data-filter="etf">ETFs</button>
+            <button class="filter-btn" data-filter="profitable">Profitable Only</button>
+            <input type="text" class="filter-search" placeholder="🔍 Search strategies..." id="searchInput">
+        </section>
+
+        <!-- Strategy Cards Grid -->
+        <section class="cards" id="cardsContainer">
             {% for p in leaderboard %}
-            <a href="profile_{{ p.profile_id }}.html" class="card {{ 'positive' if p.return_pct > 0 else ('negative' if p.return_pct < 0 else '') }}">
-                <div class="card-rank">#{{ p.rank }}</div>
+            <a href="profile_{{ p.profile_id }}.html" 
+               class="card {{ 'positive' if p.return_pct > 0 else ('negative' if p.return_pct < 0 else '') }}"
+               data-asset="{{ p.asset_type | lower }}"
+               data-name="{{ p.display_name | lower }}"
+               data-profitable="{{ 'true' if p.return_pct > 0 else 'false' }}">
+                <div class="card-header">
+                    <div class="card-rank {{ 'top-3' if p.rank <= 3 else '' }}">#{{ p.rank }}</div>
+                    <span class="card-asset {{ p.asset_type | lower }}">{{ p.asset_type }}</span>
+                </div>
+                
                 <div class="card-name">{{ p.display_name }}</div>
-                <div class="card-asset">{{ p.asset_type }}</div>
-                <div class="card-value">{{ p.total | fmt_money }}</div>
-                <div class="card-return">{{ p.return_pct | fmt_pct }}</div>
+                
+                <!-- Sparkline placeholder -->
+                <div class="card-sparkline">
+                    <canvas id="spark-{{ p.profile_id }}" width="200" height="40"></canvas>
+                </div>
+                
+                <div class="card-metrics">
+                    <div class="card-value">{{ p.total | fmt_money }}</div>
+                    <div class="card-return">{{ p.return_pct | fmt_pct }}</div>
+                </div>
+                
                 <div class="card-details">
-                    <span>Active: {{ p.active }}</span>
-                    <span>Closed: {{ p.wins + p.losses }}</span>
+                    <div class="card-detail-item">
+                        <span>Active:</span> {{ p.active }}
+                    </div>
+                    <div class="card-detail-item">
+                        <span>Closed:</span> {{ p.wins + p.losses }}
+                    </div>
                     {% if p.wins + p.losses > 0 %}
-                    <span>WR: {{ "%.0f" | format(p.win_rate) }}%</span>
+                    <div class="card-detail-item">
+                        <span>Win Rate:</span> {{ "%.0f" | format(p.win_rate) }}%
+                    </div>
                     {% endif %}
+                    <div class="card-detail-item">
+                        <span>Days:</span> {{ p.days_active }}d
+                    </div>
                 </div>
             </a>
             {% endfor %}
@@ -38,17 +120,20 @@
         <section class="chart-section">
             <h2>Return Curves</h2>
             {% if return_curves_json != '{"labels": [], "datasets": []}' %}
-            <div class="chart-container">
+            <div class="chart-container large">
                 <canvas id="returnChart"></canvas>
             </div>
             {% else %}
-            <p class="no-data">Waiting for daily snapshots... Charts will appear after 2-3 days of data.</p>
+            <div class="no-data">
+                <p>Waiting for daily snapshots...</p>
+                <p>Charts will appear after 2-3 days of data.</p>
+            </div>
             {% endif %}
         </section>
 
         <!-- Leaderboard Table -->
         <section class="table-section">
-            <h2>Leaderboard</h2>
+            <h2>📋 Full Leaderboard</h2>
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -59,7 +144,7 @@
                             <th>Total Value</th>
                             <th>Return</th>
                             <th>Active</th>
-                            <th>Closed</th>
+                            <th>W/L</th>
                             <th>Win Rate</th>
                             <th>Days</th>
                             <th>Last Signal</th>
@@ -69,17 +154,17 @@
                     <tbody>
                         {% for p in leaderboard %}
                         <tr>
-                            <td>{{ p.rank }}</td>
+                            <td><strong>{{ p.rank }}</strong></td>
                             <td><a href="profile_{{ p.profile_id }}.html">{{ p.display_name }}</a></td>
-                            <td><span class="badge badge-{{ p.asset_type }}">{{ p.asset_type }}</span></td>
-                            <td>{{ p.total | fmt_money }}</td>
-                            <td class="{{ 'positive' if p.return_pct > 0 else 'negative' }}">{{ p.return_pct | fmt_pct }}</td>
+                            <td><span class="badge badge-{{ p.asset_type | lower }}">{{ p.asset_type }}</span></td>
+                            <td style="font-family: var(--font-mono);">{{ p.total | fmt_money }}</td>
+                            <td class="{{ 'positive' if p.return_pct > 0 else 'negative' }}" style="font-family: var(--font-mono); font-weight: 600;">{{ p.return_pct | fmt_pct }}</td>
                             <td>{{ p.active }}</td>
-                            <td>{{ p.wins + p.losses }}</td>
-                            <td>{% if p.wins + p.losses > 0 %}{{ "%.0f" | format(p.win_rate) }}%{% else %}-{% endif %}</td>
+                            <td>{{ p.wins }}W / {{ p.losses }}L</td>
+                            <td>{% if p.wins + p.losses > 0 %}{{ "%.0f" | format(p.win_rate) }}%{% else %}—{% endif %}</td>
                             <td>{{ p.days_active }}d</td>
                             <td>{{ p.last_signal }}</td>
-                            <td>{{ p.data_source }}</td>
+                            <td style="color: var(--text-muted);">{{ p.data_source }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -90,7 +175,8 @@
         <!-- Optimizer Log -->
         {% if optimizer_log %}
         <section class="table-section">
-            <h2>Optimizer Activity</h2>
+            <h2>🤖 Optimizer Activity</h2>
+            <p class="section-note">The auto-optimizer adjusts strategies every Friday based on performance.</p>
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -104,9 +190,9 @@
                     <tbody>
                         {% for log in optimizer_log %}
                         <tr>
-                            <td>{{ log.date }}</td>
+                            <td style="font-family: var(--font-mono);">{{ log.date }}</td>
                             <td><span class="badge badge-{{ log.action | lower }}">{{ log.action }}</span></td>
-                            <td>{{ log.profile_id }}</td>
+                            <td><strong>{{ log.profile_id }}</strong></td>
                             <td class="reason-cell">{{ log.reason }}</td>
                         </tr>
                         {% endfor %}
@@ -119,13 +205,13 @@
         <!-- Retired Profiles -->
         {% if retired_profiles %}
         <section class="table-section">
-            <h2>Retired Profiles</h2>
-            <p class="section-note">These profiles were auto-spawned by the optimizer and later retired due to underperformance.</p>
+            <h2>🪦 Strategy Graveyard</h2>
+            <p class="section-note">These strategies were auto-spawned by the optimizer and later retired due to underperformance.</p>
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
-                            <th>Profile</th>
+                            <th>Strategy</th>
                             <th>Based On</th>
                             <th>Final Return</th>
                             <th>W/L</th>
@@ -136,10 +222,10 @@
                         {% for r in retired_profiles %}
                         <tr class="retired-row">
                             <td>{{ r.display_name }}</td>
-                            <td>{{ r.spawned_from or '-' }}</td>
-                            <td class="{{ 'positive' if r.return_pct > 0 else 'negative' }}">{{ r.return_pct | fmt_pct }}</td>
+                            <td>{{ r.spawned_from or '—' }}</td>
+                            <td class="{{ 'positive' if r.return_pct > 0 else 'negative' }}" style="font-family: var(--font-mono);">{{ r.return_pct | fmt_pct }}</td>
                             <td>{{ r.wins }}W / {{ r.losses }}L</td>
-                            <td>{{ r.retired_date }}</td>
+                            <td style="font-family: var(--font-mono);">{{ r.retired_date }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -150,47 +236,200 @@
     </main>
 
     <footer>
-        <p>Paper trading only. No real money at risk. Auto-optimizer runs every Friday.</p>
+        <p>📌 Paper trading simulation only. No real money at risk.<br>
+        Auto-optimizer runs every Friday to adjust strategy mix based on performance.</p>
     </footer>
 
     <script>
+    // Chart.js default configuration
+    Chart.defaults.color = '#8b97a8';
+    Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    
+    // Return Curves Chart
     const chartData = {{ return_curves_json | safe }};
     if (chartData.labels.length > 0) {
-        new Chart(document.getElementById('returnChart'), {
+        const ctx = document.getElementById('returnChart').getContext('2d');
+        
+        // Enhanced gradient for each dataset
+        chartData.datasets.forEach((dataset, index) => {
+            const color = dataset.borderColor;
+            // Create subtle fill gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, color.replace(')', ', 0.1)').replace('rgb', 'rgba'));
+            gradient.addColorStop(1, 'transparent');
+            dataset.backgroundColor = gradient;
+            dataset.fill = index === 0; // Only fill the top performer
+        });
+        
+        new Chart(ctx, {
             type: 'line',
             data: chartData,
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
+                interaction: { 
+                    mode: 'index', 
+                    intersect: false 
+                },
                 plugins: {
                     legend: {
-                        labels: { color: '#ccc', font: { size: 12 } }
+                        position: 'top',
+                        align: 'start',
+                        labels: { 
+                            color: '#8b97a8', 
+                            font: { size: 11 },
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
                     },
                     tooltip: {
+                        backgroundColor: 'rgba(10, 14, 20, 0.95)',
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 1,
+                        padding: 12,
+                        titleFont: { size: 13, weight: 600 },
+                        bodyFont: { size: 12 },
                         callbacks: {
                             label: function(ctx) {
-                                return ctx.dataset.label + ': ' + (ctx.parsed.y != null ? ctx.parsed.y.toFixed(1) + '%' : 'N/A');
+                                const value = ctx.parsed.y;
+                                const sign = value >= 0 ? '+' : '';
+                                return ctx.dataset.label + ': ' + sign + value.toFixed(2) + '%';
                             }
                         }
                     }
                 },
                 scales: {
                     x: {
-                        ticks: { color: '#888', maxTicksLimit: 15 },
-                        grid: { color: '#333' }
+                        ticks: { 
+                            color: '#5c6773', 
+                            maxTicksLimit: 12,
+                            font: { size: 11 }
+                        },
+                        grid: { 
+                            color: 'rgba(255, 255, 255, 0.04)',
+                            drawBorder: false
+                        }
                     },
                     y: {
                         ticks: {
-                            color: '#888',
-                            callback: function(v) { return v.toFixed(1) + '%'; }
+                            color: '#5c6773',
+                            font: { size: 11 },
+                            callback: function(v) { 
+                                return (v >= 0 ? '+' : '') + v.toFixed(1) + '%'; 
+                            }
                         },
-                        grid: { color: '#333' }
+                        grid: { 
+                            color: 'rgba(255, 255, 255, 0.04)',
+                            drawBorder: false
+                        }
                     }
                 }
             }
         });
     }
+    
+    // Mini Sparkline Charts for Cards
+    const sparklineData = {{ return_curves_json | safe }};
+    if (sparklineData.labels.length > 0) {
+        sparklineData.datasets.forEach(dataset => {
+            const profileId = dataset.label.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const canvas = document.querySelector(`[id^="spark-"][id*="${profileId}"]`) || 
+                           document.getElementById('spark-' + profileId);
+            
+            // Try to match by display name pattern
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const cardName = card.querySelector('.card-name')?.textContent;
+                if (cardName === dataset.label) {
+                    const sparkCanvas = card.querySelector('.card-sparkline canvas');
+                    if (sparkCanvas && dataset.data.filter(d => d !== null).length > 1) {
+                        const ctx = sparkCanvas.getContext('2d');
+                        const data = dataset.data.filter(d => d !== null);
+                        const lastValue = data[data.length - 1];
+                        const color = lastValue >= 0 ? '#10b981' : '#ef4444';
+                        
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: data.map((_, i) => i),
+                                datasets: [{
+                                    data: data,
+                                    borderColor: color,
+                                    borderWidth: 2,
+                                    fill: true,
+                                    backgroundColor: (context) => {
+                                        const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, 40);
+                                        gradient.addColorStop(0, color.replace(')', ', 0.3)').replace('#', 'rgba(').replace(/([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i, (_, r, g, b) => `${parseInt(r, 16)}, ${parseInt(g, 16)}, ${parseInt(b, 16)}`));
+                                        gradient.addColorStop(1, 'transparent');
+                                        return gradient;
+                                    },
+                                    tension: 0.4,
+                                    pointRadius: 0
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                                scales: {
+                                    x: { display: false },
+                                    y: { display: false }
+                                },
+                                elements: {
+                                    line: { borderCapStyle: 'round' }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    }
+    
+    // Filter Functionality
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.card');
+    const searchInput = document.getElementById('searchInput');
+    
+    function filterCards() {
+        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+        const searchTerm = searchInput.value.toLowerCase();
+        
+        cards.forEach(card => {
+            const asset = card.dataset.asset;
+            const name = card.dataset.name;
+            const profitable = card.dataset.profitable === 'true';
+            
+            let show = true;
+            
+            // Asset type filter
+            if (activeFilter !== 'all') {
+                if (activeFilter === 'profitable') {
+                    show = profitable;
+                } else {
+                    show = asset === activeFilter;
+                }
+            }
+            
+            // Search filter
+            if (show && searchTerm) {
+                show = name.includes(searchTerm);
+            }
+            
+            card.style.display = show ? 'flex' : 'none';
+        });
+    }
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterCards();
+        });
+    });
+    
+    searchInput.addEventListener('input', filterCards);
     </script>
 </body>
 </html>

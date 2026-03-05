@@ -297,6 +297,11 @@ class TradingEngine:
         conn.close()
         print("Portfolios recalculated.")
 
+        # Save daily snapshots for equity curve tracking
+        for profile in profiles:
+            self.db.save_daily_snapshot(profile.profile_id)
+        print("Portfolio snapshots saved.")
+
     # ------------------------------------------
     # Signal logging
     # ------------------------------------------

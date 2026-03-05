@@ -64,6 +64,10 @@ class DbManager:
                 trades_count INTEGER DEFAULT 0,
                 wins INTEGER DEFAULT 0,
                 losses INTEGER DEFAULT 0,
+                sharpe_ratio REAL,
+                max_drawdown REAL,
+                profit_factor REAL,
+                sortino_ratio REAL,
                 updated_at DATE
             )
         """)
@@ -196,6 +200,18 @@ class DbManager:
             except sqlite3.OperationalError:
                 pass  # Column already exists
 
+        # Add advanced metrics columns to portfolios table
+        for alter in [
+            "ALTER TABLE portfolios ADD COLUMN sharpe_ratio REAL",
+            "ALTER TABLE portfolios ADD COLUMN max_drawdown REAL",
+            "ALTER TABLE portfolios ADD COLUMN profit_factor REAL",
+            "ALTER TABLE portfolios ADD COLUMN sortino_ratio REAL",
+        ]:
+            try:
+                c.execute(alter)
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
         # Backfill profile_id from strategy
         c.execute("UPDATE trades SET profile_id = strategy WHERE profile_id IS NULL")
 
@@ -248,7 +264,8 @@ class DbManager:
         conn = self.connect()
         c = conn.cursor()
         c.execute("""
-            SELECT cash, invested_value, total, return_pct, trades_count, wins, losses
+            SELECT cash, invested_value, total, return_pct, trades_count, wins, losses,
+                   sharpe_ratio, max_drawdown, profit_factor, sortino_ratio
             FROM portfolios WHERE strategy = ?
         """, (profile_id,))
         row = c.fetchone()
@@ -259,6 +276,8 @@ class DbManager:
             'cash': row[0], 'invested_value': row[1], 'total': row[2],
             'return_pct': row[3] or 0, 'trades_count': row[4] or 0,
             'wins': row[5] or 0, 'losses': row[6] or 0,
+            'sharpe_ratio': row[7], 'max_drawdown': row[8],
+            'profit_factor': row[9], 'sortino_ratio': row[10],
         }
 
     def get_active_positions(self, profile_id):
@@ -326,6 +345,42 @@ class DbManager:
 
         conn.commit()
         conn.close()
+
+    def get_snapshots(self, profile_id: str, days: int = 30) -> List[Dict]:
+        """Retrieve historical portfolio snapshots for equity curve display.
+        
+        Args:
+            profile_id: The profile identifier
+            days: Number of days of history to retrieve (default 30)
+            
+        Returns:
+            List of snapshot dictionaries with date, total, cash, invested, return_pct
+        """
+        conn = self.connect()
+        c = conn.cursor()
+        c.execute("""
+            SELECT snapshot_date, total_value, cash, invested_value, return_pct,
+                   active_positions, closed_positions, wins, losses
+            FROM portfolio_snapshots
+            WHERE profile_id = ?
+            ORDER BY snapshot_date DESC
+            LIMIT ?
+        """, (profile_id, days))
+        rows = c.fetchall()
+        conn.close()
+        
+        # Return in chronological order (oldest first)
+        return [{
+            'date': r[0],
+            'total': r[1],
+            'cash': r[2],
+            'invested': r[3],
+            'return_pct': r[4],
+            'active_positions': r[5],
+            'closed_positions': r[6],
+            'wins': r[7],
+            'losses': r[8],
+        } for r in reversed(rows)]
 
     def save_benchmark_price(self, ticker, price):
         """Save a daily benchmark price."""

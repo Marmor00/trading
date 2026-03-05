@@ -19,11 +19,11 @@
         <section class="metrics-grid">
             <div class="metric">
                 <div class="metric-label">Total Value</div>
-                <div class="metric-value">$10,058</div>
+                <div class="metric-value">$10,076</div>
             </div>
             <div class="metric positive">
                 <div class="metric-label">Return</div>
-                <div class="metric-value">+0.6%</div>
+                <div class="metric-value">+0.8%</div>
             </div>
             <div class="metric">
                 <div class="metric-label">Win Rate</div>
@@ -100,21 +100,10 @@
                             <td><strong>XLK</strong></td>
                             <td>XLK Sector ETF</td>
                             <td>$137.50</td>
-                            <td>$139.99</td>
-                            <td class="positive">1.8%</td>
-                            <td>4</td>
+                            <td>$141.04</td>
+                            <td class="positive">2.6%</td>
+                            <td>5</td>
                             <td>21</td>
-                            <td>ROTATION</td>
-                        </tr>
-                        
-                        <tr>
-                            <td><strong>XLF</strong></td>
-                            <td>XLF Sector ETF</td>
-                            <td>$51.21</td>
-                            <td>$51.57</td>
-                            <td class="positive">0.7%</td>
-                            <td>4</td>
-                            <td>41</td>
                             <td>ROTATION</td>
                         </tr>
                         
@@ -122,10 +111,21 @@
                             <td><strong>XLE</strong></td>
                             <td>XLE Sector ETF</td>
                             <td>$56.52</td>
-                            <td>$56.20</td>
-                            <td class="negative">-0.6%</td>
-                            <td>4</td>
+                            <td>$56.58</td>
+                            <td class="positive">0.1%</td>
+                            <td>5</td>
                             <td>26</td>
+                            <td>ROTATION</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><strong>XLF</strong></td>
+                            <td>XLF Sector ETF</td>
+                            <td>$51.21</td>
+                            <td>$51.23</td>
+                            <td class="positive">0.0%</td>
+                            <td>5</td>
+                            <td>41</td>
                             <td>ROTATION</td>
                         </tr>
                         
@@ -140,11 +140,11 @@
     </main>
 
     <footer>
-        <p>Paper trading only. No real money at risk. Updated: 2026-03-04 20:55 UTC</p>
+        <p>Paper trading only. No real money at risk. Updated: 2026-03-05 15:12 UTC</p>
     </footer>
 
     <script>
-    const snapshots = [{"date": "2026-03-03", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-04", "total": 10058.494999999999, "cash": 3543.3699999999994, "invested": 6515.125, "return_pct": 0.5849499999999899}];
+    const snapshots = [{"date": "2026-03-03", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-04", "total": 10058.494999999999, "cash": 3543.3699999999994, "invested": 6515.125, "return_pct": 0.5849499999999899}, {"date": "2026-03-05", "total": 10076.384999999998, "cash": 3543.3699999999994, "invested": 6533.014999999999, "return_pct": 0.7638499999999839}];
     if (snapshots.length > 0) {
         const labels = snapshots.map(s => s.date);
         new Chart(document.getElementById('valueChart'), {

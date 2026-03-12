@@ -37,12 +37,12 @@
         <!-- Primary Stats -->
         <div class="stats-row">
             <div class="big-stat">
-                <div class="big-stat-value">$9,985</div>
+                <div class="big-stat-value">$10,019</div>
                 <div class="big-stat-label">Total Portfolio Value</div>
             </div>
-            <div class="big-stat negative">
-                <div class="big-stat-value negative">
-                    -0.1%
+            <div class="big-stat positive">
+                <div class="big-stat-value positive">
+                    +0.2%
                 </div>
                 <div class="big-stat-label">Total Return</div>
             </div>
@@ -81,7 +81,7 @@
             
             <div class="metric negative">
                 <div class="metric-label">Max Drawdown</div>
-                <div class="metric-value negative">-0.1%</div>
+                <div class="metric-value negative">-0.9%</div>
             </div>
             
             <div class="metric">
@@ -91,14 +91,14 @@
             
             <div class="metric">
                 <div class="metric-label">Invested</div>
-                <div class="metric-value">$4,985</div>
+                <div class="metric-value">$5,019</div>
             </div>
             
             
             <div class="metric">
                 <div class="metric-label">Sharpe Ratio</div>
-                <div class="metric-value negative">
-                    -0.38
+                <div class="metric-value positive">
+                    0.05
                 </div>
             </div>
             
@@ -108,8 +108,8 @@
             
             <div class="metric">
                 <div class="metric-label">Sortino Ratio</div>
-                <div class="metric-value negative">
-                    -0.38
+                <div class="metric-value positive">
+                    0.09
                 </div>
             </div>
             
@@ -170,14 +170,14 @@
             <div class="trade-card">
                 <div class="trade-card-header">
                     <span class="trade-card-ticker">SOL</span>
-                    <span class="trade-card-return negative">
-                        -0.2%
+                    <span class="trade-card-return positive">
+                        0.5%
                     </span>
                 </div>
                 <div class="trade-card-details">
                     <span>Entry: $86.80</span>
-                    <span>Current: $86.63</span>
-                    <span>Days: 1</span>
+                    <span>Current: $87.22</span>
+                    <span>Days: 3</span>
                     <span>Shares: 57.54</span>
                 </div>
             </div>
@@ -207,17 +207,17 @@
                             </td>
                             <td style="text-align: left;">SOL/USD</td>
                             <td style="font-family: var(--font-mono); font-weight: 500;">$86.80</td>
-                            <td style="font-family: var(--font-mono); font-weight: 500;">$86.63</td>
+                            <td style="font-family: var(--font-mono); font-weight: 500;">$87.22</td>
                             <td>
-                                <span class="negative" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
-                                    -0.2%
+                                <span class="positive" style="font-family: var(--font-mono); font-weight: 700; font-size: 14px;">
+                                    +0.5%
                                 </span>
                                 <div class="perf-bar" style="width: 80px; margin-top: 4px;">
-                                    <div class="perf-bar-fill negative" 
-                                         style="width: 0.9980039920159628%;"></div>
+                                    <div class="perf-bar-fill positive" 
+                                         style="width: 2.400485880369034%;"></div>
                                 </div>
                             </td>
-                            <td style="font-family: var(--font-mono);">1d</td>
+                            <td style="font-family: var(--font-mono);">3d</td>
                             <td style="font-family: var(--font-mono);">57.54</td>
                             <td style="color: var(--text-muted); font-size: 12px; text-align: left;">MOMENTUM</td>
                         </tr>
@@ -244,7 +244,7 @@
                 </svg>
             </span>
             Paper trading simulation only. No real money at risk.<br>
-            Last updated: 2026-03-11 20:56 UTC
+            Last updated: 2026-03-12 15:15 UTC
         </p>
     </footer>
 
@@ -253,7 +253,7 @@
     Chart.defaults.color = '#71717a';
     Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
     
-    const snapshots = [{"date": "2026-03-04", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-05", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-07", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-08", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-09", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-10", "total": 9985.02994011976, "cash": 5000.0, "invested": 4985.029940119761, "return_pct": -0.14970059880239206}, {"date": "2026-03-11", "total": 9985.02994011976, "cash": 5000.0, "invested": 4985.029940119761, "return_pct": -0.14970059880239206}];
+    const snapshots = [{"date": "2026-03-04", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-05", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-07", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-08", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-09", "total": 10000.0, "cash": 10000.0, "invested": 0.0, "return_pct": 0.0}, {"date": "2026-03-10", "total": 9985.02994011976, "cash": 5000.0, "invested": 4985.029940119761, "return_pct": -0.14970059880239206}, {"date": "2026-03-11", "total": 9985.02994011976, "cash": 5000.0, "invested": 4985.029940119761, "return_pct": -0.14970059880239206}, {"date": "2026-03-12", "total": 10018.980853944886, "cash": 5000.0, "invested": 5018.980853944887, "return_pct": 0.18980853944885895}];
     
     if (snapshots.length > 0) {
         const ctx = document.getElementById('valueChart').getContext('2d');
